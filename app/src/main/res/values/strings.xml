@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TravelChest</string>
+
+    <string name="billboard_text">Test Billboard Test</string>
 </resources>
