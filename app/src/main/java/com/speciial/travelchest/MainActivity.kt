@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             val anchorNode = AnchorNode(hitResult.createAnchor())
             anchorNode.setParent(arFragment.arSceneView.scene)
 
-            billboard = ARBillboard(this, arFragment.transformationSystem, anchorNode)
+            billboard = ARBillboard(this, arFragment.transformationSystem, anchorNode,this)
         }
     }
 
