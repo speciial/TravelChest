@@ -40,4 +40,16 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.ar:core:1.12.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.12.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }
+
+
+sceneform.asset('sampledata/globe/sphere_10x10.fbx',
+        'default',
+        'sampledata/globe/sphere_10x10.sfa',
+        'src/main/assets/sphere_10x10')
+
+sceneform.asset('sampledata/globe/earth_10x10.fbx',
+        'default',
+        'sampledata/globe/earth_10x10.sfa',
+        'src/main/assets/earth_10x10')

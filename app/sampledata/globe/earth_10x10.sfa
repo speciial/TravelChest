@@ -1,0 +1,81 @@
+{
+  animations: [
+    {
+      clips: [
+        {
+          name: 'CINEMA_4D_Main',
+        },
+      ],
+      path: 'sampledata/globe/earth_10x10.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'Earth',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: 'Diffuse_2K',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/globe/earth_10x10.fbx',
+    name: 'earth_10x10',
+    recenter: 'root',
+  },
+  samplers: [
+    {
+      file: 'sampledata/globe\\earth_10x10.fbm\\Bump_2K.png',
+      name: 'Bump_2K',
+      params: {
+        usage_type: 'Data',
+      },
+      pipeline_name: 'earth_10x10.fbm\\Bump_2K.png',
+    },
+    {
+      file: 'sampledata/globe\\earth_10x10.fbm\\Diffuse_2K.png',
+      name: 'Diffuse_2K',
+      pipeline_name: 'earth_10x10.fbm\\Diffuse_2K.png',
+    },
+  ],
+  version: '0.54:2',
+}
