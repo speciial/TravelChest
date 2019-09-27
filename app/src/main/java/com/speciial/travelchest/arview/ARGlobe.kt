@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
@@ -24,15 +23,14 @@ class ARGlobe(
 
     init {
         ModelRenderable.builder()
-            .setSource(context, Uri.parse("sphere_10x10.sfb"))
+            .setSource(context, Uri.parse("sphere_100x100.sfb"))
             .build()
             .thenAccept {
                 renderable = it
 
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
-                placementNode.scaleController.minScale = 1.0f
-                placementNode.scaleController.maxScale = 2.0f
+                placementNode.scaleController.isEnabled = false
                 placementNode.name = name
 
                 placementNode.addTransformChangedListener { new, old ->
@@ -46,16 +44,8 @@ class ARGlobe(
             }
     }
 
-    fun translatePosition(x: Float, y: Float, z: Float) {
-        placementNode.localPosition = Vector3(x, y, z)
-    }
-
-    fun scale(factor: Float) {
-        placementNode.localScale = Vector3(factor, factor, factor)
-    }
-
     companion object{
-        const val DEFAULT_RADIUS = 0.1f // 5cm radius for the sphere model
+        const val DEFAULT_RADIUS = 0.5f // 50cm radius for the sphere model
     }
 
 }

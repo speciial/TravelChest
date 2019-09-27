@@ -3,6 +3,7 @@ package com.speciial.travelchest.arview
 import android.content.Context
 import android.net.Uri
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
@@ -21,28 +22,28 @@ class ARMarker(
 
     init {
         ModelRenderable.builder()
-            .setSource(context, Uri.parse("sphere_10x10.sfb"))
+            .setSource(context, Uri.parse("marker.sfb"))
             .build()
             .thenAccept {
                 renderable = it
 
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
-                placementNode.scaleController.minScale = 0.1f
+                placementNode.scaleController.minScale = 1.0f
                 placementNode.name = name
             }
     }
 
-    fun translatePosition(x: Float, y: Float, z: Float) {
+    fun translate(x: Float, y: Float, z: Float) {
         placementNode.localPosition = Vector3(x, y, z)
+    }
+
+    fun rotate(rot: Quaternion){
+        placementNode.localRotation = rot
     }
 
     fun scale(factor: Float) {
         placementNode.localScale = Vector3(factor, factor, factor)
-    }
-
-    companion object{
-        const val DEFAULT_RADIUS = 0.05f // 5cm radius for the sphere model
     }
 
 }

@@ -53,3 +53,13 @@ sceneform.asset('sampledata/globe/earth_10x10.fbx',
         'default',
         'sampledata/globe/earth_10x10.sfa',
         'src/main/assets/earth_10x10')
+
+sceneform.asset('sampledata/globe/sphere_100x100.fbx',
+        'default',
+        'sampledata/globe/sphere_100x100.sfa',
+        'src/main/assets/sphere_100x100')
+
+sceneform.asset('sampledata/globe/marker.fbx',
+        'default',
+        'sampledata/globe/marker.sfa',
+        'src/main/assets/marker')
