@@ -2,15 +2,13 @@ package com.speciial.travelchest.arview
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.speciial.travelchest.MainActivity.Companion.TAG
 
-class ARGlobe(
+class ARMarker(
     context: Context,
     transformationSystem: TransformationSystem,
     anchorNode: Node,
@@ -18,7 +16,6 @@ class ARGlobe(
 ) {
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
-    var currentScaleValue = 1.0f
 
     private lateinit var renderable: ModelRenderable
 
@@ -31,18 +28,8 @@ class ARGlobe(
 
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
-                placementNode.scaleController.minScale = 1.0f
-                placementNode.scaleController.maxScale = 2.0f
+                placementNode.scaleController.minScale = 0.1f
                 placementNode.name = name
-
-                placementNode.addTransformChangedListener { new, old ->
-                    if (new.name == old.name) {
-                        if (new.localScale.x != currentScaleValue) {
-                            Log.d(TAG, new.localScale.toString())
-                            currentScaleValue = new.localScale.x
-                        }
-                    }
-                }
             }
     }
 
@@ -55,7 +42,7 @@ class ARGlobe(
     }
 
     companion object{
-        const val DEFAULT_RADIUS = 0.1f // 5cm radius for the sphere model
+        const val DEFAULT_RADIUS = 0.05f // 5cm radius for the sphere model
     }
 
 }
