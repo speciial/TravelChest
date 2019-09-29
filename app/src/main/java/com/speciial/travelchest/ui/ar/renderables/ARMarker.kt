@@ -1,4 +1,4 @@
-package com.speciial.travelchest.arview
+package com.speciial.travelchest.ui.ar.renderables
 
 import android.content.Context
 import android.net.Uri

@@ -5,10 +5,10 @@
     app:startDestination="@+id/nav_home">
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.mobileapplications.ui.home.HomeFragment"
+        android:name="com.speciial.travelchest.ui.home.HomeFragment"
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/nav_ar"
-        android:name="com.example.mobileapplications.ui.ar.ArFragment"
+        android:name="com.speciial.travelchest.ui.ar.ArFragment"
         android:label="ArFragment" />
 </navigation>

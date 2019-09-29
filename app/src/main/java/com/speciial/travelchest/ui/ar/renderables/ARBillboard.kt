@@ -1,11 +1,10 @@
-package com.speciial.travelchest.arview
+package com.speciial.travelchest.ui.ar.renderables
 
 import android.content.Context
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 
 class ARBillboard(

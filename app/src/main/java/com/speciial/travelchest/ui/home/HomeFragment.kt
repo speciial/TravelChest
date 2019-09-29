@@ -1,4 +1,4 @@
-package com.example.mobileapplications.ui.home
+package com.speciial.travelchest.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
