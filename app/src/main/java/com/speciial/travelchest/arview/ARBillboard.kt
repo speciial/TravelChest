@@ -5,6 +5,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 
 class ARBillboard(
@@ -15,7 +16,6 @@ class ARBillboard(
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
 
-
     private lateinit var renderable: ViewRenderable
 
     init {
@@ -24,7 +24,6 @@ class ARBillboard(
             .build()
             .thenAccept{
                 renderable = it
-
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
             }
