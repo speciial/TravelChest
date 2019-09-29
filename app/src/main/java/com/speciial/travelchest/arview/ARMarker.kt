@@ -12,8 +12,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 class ARMarker(
     context: Context,
     transformationSystem: TransformationSystem,
-    anchorNode: Node,
-    name: String
+    anchorNode: Node
 ) {
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
@@ -30,16 +29,15 @@ class ARMarker(
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
                 placementNode.scaleController.minScale = 1.0f
-                placementNode.name = name
             }
     }
 
-    fun translate(x: Float, y: Float, z: Float) {
-        placementNode.localPosition = Vector3(x, y, z)
+    fun updateTranslation(pos: Vector3) {
+        placementNode.localPosition = pos
     }
 
-    fun rotate(rot: Quaternion){
-        placementNode.localRotation = rot
+    fun adjustOrientation(from: Vector3, to: Vector3){
+        placementNode.localRotation = Quaternion.rotationBetweenVectors(from, to)
     }
 
     fun scale(factor: Float) {

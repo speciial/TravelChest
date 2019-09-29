@@ -2,18 +2,15 @@ package com.speciial.travelchest.arview
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.speciial.travelchest.MainActivity.Companion.TAG
 
 class ARGlobe(
     context: Context,
     transformationSystem: TransformationSystem,
-    anchorNode: Node,
-    name: String
+    anchorNode: Node
 ) {
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
@@ -33,8 +30,9 @@ class ARGlobe(
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
                 placementNode.scaleController.isEnabled = false
-                placementNode.name = name
 
+                /*
+                TODO(@speciial): add the ability to scale the globe back in
                 placementNode.addTransformChangedListener { new, old ->
                     if (new.name == old.name) {
                         if (new.localScale.x != currentScaleValue) {
@@ -43,9 +41,7 @@ class ARGlobe(
                         }
                     }
                 }
-
-                Log.d(TAG, placementNode.worldPosition.toString())
-                Log.d(TAG, placementNode.localPosition.toString())
+                 */
             }
     }
 
