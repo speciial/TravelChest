@@ -1,7 +1,7 @@
 package com.speciial.travelchest.arview
 
 import android.content.Context
-import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
@@ -11,12 +11,10 @@ import com.speciial.travelchest.R
 class ARBillboard(
     context: Context,
     transformationSystem: TransformationSystem,
-    anchorNode: AnchorNode,
-    activity: MainActivity
+    anchorNode: Node
 ) {
 
-
-    private var placementNode: TransformableNode = TransformableNode(transformationSystem)
+    var placementNode: TransformableNode = TransformableNode(transformationSystem)
 
     private lateinit var renderable: ViewRenderable
 
