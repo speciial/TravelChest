@@ -22,8 +22,10 @@ class ARGlobe(
     private lateinit var renderable: ModelRenderable
 
     init {
+        // TODO(@speciial): optimize loading the model.
+        //                  texture seems to big and takes long time to display
         ModelRenderable.builder()
-            .setSource(context, Uri.parse("sphere_100x100.sfb"))
+            .setSource(context, Uri.parse("globe_textured_8k.sfb"))
             .build()
             .thenAccept {
                 renderable = it
@@ -41,10 +43,13 @@ class ARGlobe(
                         }
                     }
                 }
+
+                Log.d(TAG, placementNode.worldPosition.toString())
+                Log.d(TAG, placementNode.localPosition.toString())
             }
     }
 
-    companion object{
+    companion object {
         const val DEFAULT_RADIUS = 0.5f // 50cm radius for the sphere model
     }
 

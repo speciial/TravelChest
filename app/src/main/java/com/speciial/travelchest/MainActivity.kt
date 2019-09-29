@@ -7,11 +7,15 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.ArFragment
 import com.speciial.travelchest.arview.ARGlobe
 import com.speciial.travelchest.arview.ARMarker
 
 class MainActivity : AppCompatActivity() {
+
+    // TODO(speciial): Clean up all the imported models and move to code
+    //                 to their own functions and classes
 
     private lateinit var arFragment: ArFragment
 
@@ -28,11 +32,12 @@ class MainActivity : AppCompatActivity() {
     private fun calcMarkerRotation() {
         // TODO(@speciial): rotation calculation is wrong but I'm to lazy to
         //                  find out how to do it correctly now
-        val p1 = globe.placementNode.localPosition
-        val p2 = marker.placementNode.localPosition
+        val globeCenter= Vector3(0.0f, 0.5f, 0.0f)
+        val markerPos = marker.placementNode.localPosition
 
-        rot = Quaternion.lookRotation(p2, p1)
-    }
+        val rotDir = Vector3.subtract(globeCenter, markerPos)
+        rot = Quaternion.axisAngle(rotDir, 0.0f)
+}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
             globe =
                 ARGlobe(arFragment.context!!, arFragment.transformationSystem, anchorNode, "globe")
+
             marker =
                 ARMarker(
                     arFragment.context!!,
@@ -58,8 +64,10 @@ class MainActivity : AppCompatActivity() {
                 )
 
             // TODO(@speciial): Check if a new location was set before changing the translation
-            // TODO(@speciial): Fix the offset on the y axis, subtract the height of the marker
             marker.translate(x, (y + ARGlobe.DEFAULT_RADIUS), z)
+
+            calcMarkerRotation()
+            marker.rotate(rot!!)
         }
 
         locationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -67,14 +75,19 @@ class MainActivity : AppCompatActivity() {
             if (task.isSuccessful && task.result != null) {
 
                 // converting lat and lng to radians
-                val lat = task.result!!.latitude * (kotlin.math.PI / 180)
-                val lng = task.result!!.longitude * (kotlin.math.PI / 180)
+                val lat = task.result!!.latitude.toFloat() //  * kotlin.math.PI / 180.0f
+                val lng = task.result!!.longitude.toFloat()//  * kotlin.math.PI / 180.0f
+
+                val phi = ((90 - lat) * (kotlin.math.PI / 180.0f)).toFloat()
+                val theta = ((lng + 180) * (kotlin.math.PI / 180.0f)).toFloat()
 
                 // calculating the xzy coordinates on the unit sphere
-                x = (kotlin.math.cos(lat) * kotlin.math.cos(lng)).toFloat() / 2
-                y = (kotlin.math.cos(lat) * kotlin.math.sin(lng)).toFloat() / 2
-                z = kotlin.math.sin(lat).toFloat() / 2
+                x = -(0.5f * kotlin.math.sin(phi) * kotlin.math.cos(theta))
+                y = 0.5f * kotlin.math.cos(phi)
+                z = (0.5f * kotlin.math.sin(phi) * kotlin.math.sin(theta))
 
+
+                Log.d(TAG, "Lat: ${task.result!!.latitude},Lng: ${task.result!!.longitude}")
                 Log.d(TAG, "X: $x, Y: $y, Z: $z")
             }
         }

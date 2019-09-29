@@ -1,0 +1,73 @@
+{
+  animations: [
+    {
+      clips: [
+        {
+          name: 'CINEMA_4D_Main',
+        },
+      ],
+      path: 'sampledata/globe/globe_textured_8k.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'globe',
+      parameters: [
+        {
+          baseColor: [
+            1,
+            1,
+            1,
+            1,
+          ],
+        },
+        {
+          baseColorMap: 'earth_color_8k',
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/globe/globe_textured_8k.fbx',
+    name: 'globe_textured_8k',
+    recenter: 'root',
+  },
+  samplers: [
+    {
+      file: 'sampledata/globe\\globe_textured_8k.fbm\\earth_color_8k.jpg',
+      name: 'earth_color_8k',
+      pipeline_name: 'globe_textured_8k.fbm\\earth_color_8k.jpg',
+    },
+  ],
+  version: '0.54:2',
+}

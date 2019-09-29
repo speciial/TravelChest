@@ -63,3 +63,13 @@ sceneform.asset('sampledata/globe/marker.fbx',
         'default',
         'sampledata/globe/marker.sfa',
         'src/main/assets/marker')
+
+sceneform.asset('sampledata/globe/globe_textured.fbx',
+        'default',
+        'sampledata/globe/globe_textured.sfa',
+        'src/main/assets/globe_textured')
+
+sceneform.asset('sampledata/globe/globe_textured_8k.fbx',
+        'default',
+        'sampledata/globe/globe_textured_8k.sfa',
+        'src/main/assets/globe_textured_8k')
