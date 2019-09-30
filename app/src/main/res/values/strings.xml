@@ -2,4 +2,16 @@
     <string name="app_name">TravelChest</string>
 
     <string name="billboard_text">Test Billboard Test</string>
+
+    <string name="home_picture_content_desc">Button to take a picture</string>
+    <string name="home_movie_content_desc">Button to take a video</string>
+    <string name="home_audio_content_desc">Button to record an audio</string>
+
+
+    <string name="audiodialog_start">Start</string>
+    <string name="audiodialog_stop">Stop</string>
+    <string name="audiodialog_play">Play record</string>
+    <string name="audiodialog_save">Save the record</string>
+    <string name="audiodialog_cancel">Cancel</string>
+
 </resources>
