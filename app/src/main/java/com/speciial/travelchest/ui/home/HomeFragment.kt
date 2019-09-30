@@ -80,6 +80,7 @@ class HomeFragment : Fragment() {
     }
 
 
+
     fun buttonPictureListener(){
         getLastLocation()
         val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
