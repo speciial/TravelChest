@@ -10,8 +10,12 @@ data class File (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "file_id")
     val uid:Long,
-    val type:Long,
+    val type:Int,
     val path:String,
     @Embedded
     val location:Location
-)
+){
+    override fun toString(): String {
+        return "Type : ${this.type} . Path : ${this.path}"
+    }
+}
