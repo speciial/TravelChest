@@ -19,6 +19,8 @@ class ARMarker(
 
     private lateinit var renderable: ModelRenderable
 
+    private var eventListener: MarkerEventListener? = null
+
     init {
         ModelRenderable.builder()
             .setSource(context, Uri.parse("marker.sfb"))
@@ -28,15 +30,25 @@ class ARMarker(
 
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
-                placementNode.scaleController.minScale = 1.0f
+                placementNode.scaleController.isEnabled = false
+                placementNode.setOnTapListener { hitTestResult, motionEvent ->
+                    if (eventListener != null) {
+                        eventListener!!.onMarkerClick(0, placementNode)
+                    }
+                }
             }
     }
 
-    fun updateTranslation(pos: Vector3) {
-        placementNode.localPosition = pos
+    fun setEventListener(el: MarkerEventListener) {
+        eventListener = el
     }
 
-    fun adjustOrientation(from: Vector3, to: Vector3){
+    fun updateTranslation(pos: Vector3) {
+        placementNode.localPosition = pos.normalized().scaled(0.95f)
+        placementNode.localScale = Vector3(0.9f, 0.9f, 0.9f)
+    }
+
+    fun adjustOrientation(from: Vector3, to: Vector3) {
         placementNode.localRotation = Quaternion.rotationBetweenVectors(from, to)
     }
 
@@ -44,4 +56,7 @@ class ARMarker(
         placementNode.localScale = Vector3(factor, factor, factor)
     }
 
+    interface MarkerEventListener {
+        fun onMarkerClick(markerID: Int, node: Node)
+    }
 }

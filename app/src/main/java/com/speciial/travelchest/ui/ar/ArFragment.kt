@@ -8,23 +8,32 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.ar.core.Config
+import com.google.ar.core.Session
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.ArFragment
 import com.speciial.travelchest.MainActivity
+import com.speciial.travelchest.MainActivity.Companion.TAG
 import com.speciial.travelchest.R
+import com.speciial.travelchest.ui.ar.renderables.ARBillboard
 import com.speciial.travelchest.ui.ar.renderables.ARGlobe
 import com.speciial.travelchest.ui.ar.renderables.ARMarker
 
 
-class ArFragment : Fragment() {
+class ArFragment : Fragment(), ARMarker.MarkerEventListener {
 
     private lateinit var arFragment: ArFragment
 
-    private lateinit var locationClient: FusedLocationProviderClient
+    private var earthAnchorNode: AnchorNode? = null
 
     private var globe: ARGlobe? = null
     private var marker: ARMarker? = null
+    private var billboard: ARBillboard? = null
+
+    private lateinit var locationClient: FusedLocationProviderClient
     private var locationInCoordSpace: Vector3? = null
 
     private fun getLastLocation() {
@@ -44,13 +53,43 @@ class ArFragment : Fragment() {
                 val z = (0.5 * kotlin.math.sin(phi) * kotlin.math.sin(theta))
                 locationInCoordSpace = Vector3(x.toFloat(), y.toFloat(), z.toFloat())
 
-                // TODO(@speciial): remove!
-                Log.d(MainActivity.TAG, "Lat: ${task.result!!.latitude},Lng: ${task.result!!.longitude}")
-                Log.d(MainActivity.TAG, "X: $x, Y: $y, Z: $z")
+                // TODO(@speciial): clean up
+                Log.d(TAG, "Lat: ${task.result!!.latitude},Lng: ${task.result!!.longitude}")
+                Log.d(TAG, "X: $x, Y: $y, Z: $z")
             }
         }
     }
 
+    override fun onMarkerClick(markerID: Int, node: Node) {
+        // TODO(@speciial): figure out which marker called this and add a billboard
+        Log.d(TAG, "Marker $markerID has been clicked")
+
+        if (billboard == null) {
+            billboard = ARBillboard(arFragment.context!!, arFragment.transformationSystem, node)
+            billboard!!.adjustOrientation(arFragment.arSceneView.scene.camera.worldPosition)
+        } else {
+            billboard!!.toggleVisibility()
+            billboard!!.adjustOrientation(arFragment.arSceneView.scene.camera.worldPosition)
+        }
+    }
+
+    fun onUpdate(frameTime: FrameTime) {
+        // TODO(@speciial): Why is it so stupidly hard to persist a scene
+        //                  through a orientation change event??
+        // arFragment.arSceneView.arFrame!!.
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        arFragment.arSceneView.session!!.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        arFragment.arSceneView.session!!.pause()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,15 +101,23 @@ class ArFragment : Fragment() {
         getLastLocation()
 
         arFragment = childFragmentManager.findFragmentById(R.id.sceneform_fragment) as ArFragment
+
+        var session = Session(context)
+        var config = Config(session)
+        config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+        session.configure(config)
+
+        arFragment.arSceneView.setupSession(session)
+
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
-            val anchorNode = AnchorNode(hitResult.createAnchor())
-            anchorNode.setParent(arFragment.arSceneView.scene)
+            earthAnchorNode = AnchorNode(hitResult.createAnchor())
+            earthAnchorNode!!.setParent(arFragment.arSceneView.scene)
 
             globe =
                 ARGlobe(
                     arFragment.context!!,
                     arFragment.transformationSystem,
-                    anchorNode
+                    earthAnchorNode!!
                 )
             marker =
                 ARMarker(
@@ -78,10 +125,17 @@ class ArFragment : Fragment() {
                     arFragment.transformationSystem,
                     globe!!.placementNode
                 )
-            if(locationInCoordSpace != null) {
+            marker!!.setEventListener(this)
+
+            // TODO(@speciial): Move the location tracking out to its own provider and
+            //                  only place the marker when a location is available
+            if (locationInCoordSpace != null) {
                 marker!!.updateTranslation(locationInCoordSpace!!)
                 marker!!.adjustOrientation(Vector3(0.0f, 0.5f, 0.0f), locationInCoordSpace!!)
             }
+        }
+        arFragment.arSceneView.scene.addOnUpdateListener {
+            onUpdate(it)
         }
 
         return root
