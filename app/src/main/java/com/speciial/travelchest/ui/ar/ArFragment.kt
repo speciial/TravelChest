@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.ar.core.Config
+import com.google.ar.core.Session
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.ArFragment
@@ -70,6 +73,24 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         }
     }
 
+    fun onUpdate(frameTime: FrameTime) {
+        // TODO(@speciial): Why is it so stupidly hard to persist a scene
+        //                  through a orientation change event??
+        // arFragment.arSceneView.arFrame!!.
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        arFragment.arSceneView.session!!.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        arFragment.arSceneView.session!!.pause()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +101,14 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         getLastLocation()
 
         arFragment = childFragmentManager.findFragmentById(R.id.sceneform_fragment) as ArFragment
+
+        var session = Session(context)
+        var config = Config(session)
+        config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
+        session.configure(config)
+
+        arFragment.arSceneView.setupSession(session)
+
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
             earthAnchorNode = AnchorNode(hitResult.createAnchor())
             earthAnchorNode!!.setParent(arFragment.arSceneView.scene)
@@ -104,6 +133,9 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
                 marker!!.updateTranslation(locationInCoordSpace!!)
                 marker!!.adjustOrientation(Vector3(0.0f, 0.5f, 0.0f), locationInCoordSpace!!)
             }
+        }
+        arFragment.arSceneView.scene.addOnUpdateListener {
+            onUpdate(it)
         }
 
         return root
