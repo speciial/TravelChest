@@ -13,5 +13,12 @@
     <string name="audiodialog_play">Play record</string>
     <string name="audiodialog_save">Save the record</string>
     <string name="audiodialog_cancel">Cancel</string>
+    <string name="signed_out">Signed out</string>
+    <string name="contentdescription_avatar">Avatar of the profile</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_ar">Ar</string>
+    <string name="not_connected">Not connected</string>
 
 </resources>
