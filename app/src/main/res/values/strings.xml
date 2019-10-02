@@ -2,6 +2,9 @@
     <string name="app_name">TravelChest</string>
 
     <string name="billboard_text">Test Billboard Test</string>
+    <string name="billboard_dummy_title">Year Abroad</string>
+    <string name="billboard_dummy_location">Helsinki</string>
+    <string name="billboard_dummy_date">date</string>
 
     <string name="home_picture_content_desc">Button to take a picture</string>
     <string name="home_movie_content_desc">Button to take a video</string>
