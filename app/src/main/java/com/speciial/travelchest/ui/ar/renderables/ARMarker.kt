@@ -2,12 +2,14 @@ package com.speciial.travelchest.ui.ar.renderables
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.speciial.travelchest.MainActivity.Companion.TAG
 
 class ARMarker(
     context: Context,
@@ -23,7 +25,7 @@ class ARMarker(
 
     init {
         ModelRenderable.builder()
-            .setSource(context, Uri.parse("marker.sfb"))
+            .setSource(context, Uri.parse("models/marker.sfb"))
             .build()
             .thenAccept {
                 renderable = it
@@ -31,8 +33,9 @@ class ARMarker(
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
                 placementNode.scaleController.isEnabled = false
-                placementNode.setOnTapListener { hitTestResult, motionEvent ->
+                placementNode.setOnTapListener { _, _ ->
                     if (eventListener != null) {
+                        Log.d(TAG, "Marker Clicked")
                         eventListener!!.onMarkerClick(0, placementNode)
                     }
                 }
@@ -45,7 +48,6 @@ class ARMarker(
 
     fun updateTranslation(pos: Vector3) {
         placementNode.localPosition = pos.normalized().scaled(0.95f)
-        placementNode.localScale = Vector3(0.9f, 0.9f, 0.9f)
     }
 
     fun adjustOrientation(from: Vector3, to: Vector3) {
