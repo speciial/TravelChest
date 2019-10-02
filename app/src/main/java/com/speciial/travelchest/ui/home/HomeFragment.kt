@@ -1,6 +1,7 @@
 package com.speciial.travelchest.ui.home
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.media.*
 import android.net.Uri
@@ -20,6 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
@@ -43,6 +50,15 @@ class HomeFragment : Fragment() {
     private var recRunning:Boolean = false
     private var mThreadRecord:Thread ?= null
     private var mThreadPlay:Thread ?= null
+    private var currentUser: FirebaseUser ?= null
+    private lateinit var auth: FirebaseAuth
+    lateinit var storage: FirebaseStorage
+
+
+    private var imageFile:File ?= null
+    private var  movieFile:File ?= null
+
+    private var db:TravelChestDatabase ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,18 +66,17 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-
-
+        auth = FirebaseAuth.getInstance()
+        storage = FirebaseStorage.getInstance()
+        currentUser = auth.currentUser
         root.findViewById<RecyclerView>(R.id.home_recyclerview).layoutManager = LinearLayoutManager(activity as MainActivity)
-
-
 
         getLastLocation()
 
-        val db = TravelChestDatabase.get(activity as MainActivity)
+        db = TravelChestDatabase.get(activity as MainActivity)
 
         doAsync {
-            val fileListLiveData = db.fileDao().getAll()
+            val fileListLiveData = db!!.fileDao().getAll()
             uiThread {_ ->
                 fileListLiveData.observe(activity as MainActivity, Observer { fileList ->
                     fileList.forEach {file ->
@@ -97,11 +112,11 @@ class HomeFragment : Fragment() {
         getLastLocation()
         val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
         val imgPath= activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val imageFile= File.createTempFile(fileName, ".jpg", imgPath)
-        mCurrentPhotoPath= imageFile.absolutePath
+        imageFile= File(imgPath.toString()+"/" + fileName + ".jpg")
+        mCurrentPhotoPath= imageFile!!.absolutePath
         val photoURI: Uri = FileProvider.getUriForFile(activity as MainActivity,
             "com.speciial.travelchest.ui.home",
-            imageFile)
+            imageFile!!)
         val myIntent= Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if(myIntent.resolveActivity(activity!!.packageManager) != null) {
             myIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -113,11 +128,11 @@ class HomeFragment : Fragment() {
         getLastLocation()
         val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
         val imgPath= activity?.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        val imageFile= File.createTempFile(fileName, ".webm", imgPath)
-        mCurrentVideoPath= imageFile.absolutePath
+        movieFile= File(imgPath.toString()+"/" + fileName + ".webm")
+        mCurrentVideoPath= movieFile!!.absolutePath
         val videoURI: Uri = FileProvider.getUriForFile(activity as MainActivity,
             "com.speciial.travelchest.ui.home",
-            imageFile)
+            movieFile!!)
         val myIntent= Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         if(myIntent.resolveActivity(activity!!.packageManager) != null) {
             myIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI )
@@ -139,38 +154,72 @@ class HomeFragment : Fragment() {
             recRunning = false
         }
         dialog.playButton!!.setOnClickListener {
-                try {
-                    recFile = File(storageDir.toString() + "/" + recFileName)
-                    val inputStream = FileInputStream(recFile!!)
-                    val myRunnable = PlayAudio(inputStream)
-                    mThreadPlay = Thread(myRunnable)
-                    mThreadPlay!!.start()
-                } catch (ex: IOException) {
-                    Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
-                }
-
-
+            try {
+                recFile = File(storageDir.toString() + "/" + recFileName)
+                val inputStream = FileInputStream(recFile!!)
+                val myRunnable = PlayAudio(inputStream)
+                mThreadPlay = Thread(myRunnable)
+                mThreadPlay!!.start()
+            } catch (ex: IOException) {
+                Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
+            }
         }
         dialog.saveButton!!.setOnClickListener {
             val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
-                try {
-                    if(recFile == null)
-                        Toast.makeText(activity as MainActivity, "No audio saved", Toast.LENGTH_LONG).show()
-                    else {
-                        dialog.dismiss()
-                        val filesave = File(storageDir.toString() + "/" + fileName + ".raw")
-                        recFile?.copyTo(filesave)
-                        recFile?.delete()
-                        val db = TravelChestDatabase.get(activity as MainActivity)
+            try {
+                if(recFile == null)
+                    Toast.makeText(activity as MainActivity, "No audio saved", Toast.LENGTH_LONG).show()
+                else {
+                    dialog.dismiss()
+                    val filesave = File(storageDir.toString() + "/" + fileName + ".raw")
+                    recFile?.copyTo(filesave)
+                    recFile?.delete()
+                    if(currentUser != null){
+                        val storageRef = storage.reference
+                        val file = Uri.fromFile(File(mCurrentPhotoPath))
+                        val pictureRef = storageRef.child(currentUser!!.uid + "/images/${file.lastPathSegment}")
+                        val uploadTask = pictureRef.putFile(file)
+                        val progressDoalog = createProgressDialog("sound")
+                        uploadTask.addOnSuccessListener {
+                            Log.e(MainActivity.TAG, "Sound success upload")
+                        }
+                            .addOnProgressListener { taskSnapshot ->
+                                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                                progressDoalog.progress = progress.toInt()
+                            }.addOnPausedListener {
+
+                            }
+                            .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                                if (!task.isSuccessful) {
+                                    task.exception?.let {
+                                        throw it
+                                    }
+                                }
+                                return@Continuation pictureRef.downloadUrl
+                            }).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val downloadUri = task.result
+                                    progressDoalog.dismiss()
+                                    filesave.delete()
+                                    doAsync {
+                                        db!!.fileDao().insert(
+                                            com.speciial.travelchest.model.File(0, 3, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                                        )
+                                    }
+                                }
+                            }
+                    } else {
                         doAsync {
-                            db.fileDao().insert(
-                                com.speciial.travelchest.model.File(0, 3, recFile!!.path, Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                            db!!.fileDao().insert(
+                                com.speciial.travelchest.model.File(0, 3, recFile!!.path, Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
+                                )
                             )
                         }
                     }
-                } catch (e: IOException) {
-                    Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
                 }
+            } catch (e: IOException) {
+                Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
+            }
 
         }
         dialog.cancelButton!!.setOnClickListener {
@@ -190,19 +239,94 @@ class HomeFragment : Fragment() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, recIntent: Intent?) {
-        val db = TravelChestDatabase.get(activity as MainActivity)
+
         if(requestCode== REQUEST_IMAGE_CAPTURE && resultCode== Activity.RESULT_OK) {
-            doAsync {
-                db.fileDao().insert(
-                    com.speciial.travelchest.model.File(0, 1, mCurrentPhotoPath, Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
-                )
+            if(currentUser != null){
+                val storageRef = storage.reference
+                val file = Uri.fromFile(File(mCurrentPhotoPath))
+                val pictureRef = storageRef.child(currentUser!!.uid + "/images/${file.lastPathSegment}")
+                val uploadTask = pictureRef.putFile(file)
+                val progressDoalog = createProgressDialog("picture")
+                uploadTask.addOnSuccessListener {
+                    Log.e(MainActivity.TAG, "Image success upload")
+                }
+                    .addOnProgressListener { taskSnapshot ->
+                        val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                        progressDoalog.progress = progress.toInt()
+                    }.addOnPausedListener {
+
+                    }
+                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
+                        }
+                        return@Continuation pictureRef.downloadUrl
+                    }).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val downloadUri = task.result
+                            progressDoalog.dismiss()
+                            imageFile!!.delete()
+                            doAsync {
+                                db!!.fileDao().insert(
+                                    com.speciial.travelchest.model.File(0, 1, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                                )
+                            }
+                        }
+                    }
+            } else {
+                doAsync {
+                    db!!.fileDao().insert(
+                        com.speciial.travelchest.model.File(0, 1, mCurrentPhotoPath, Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                    )
+                }
             }
+
         }
+
         if(requestCode== REQUEST_VIDEO_CAPTURE && resultCode== Activity.RESULT_OK) {
-            doAsync {
-                db.fileDao().insert(
-                    com.speciial.travelchest.model.File(0, 2, mCurrentVideoPath, Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
-                )
+            if(currentUser != null){
+                val storageRef = storage.reference
+                val file = Uri.fromFile(File(mCurrentVideoPath))
+                val pictureRef = storageRef.child(currentUser!!.uid + "/movies/${file.lastPathSegment}")
+                val uploadTask = pictureRef.putFile(file)
+                val progressDoalog = createProgressDialog("movie")
+                uploadTask.addOnSuccessListener {
+                    Log.e(MainActivity.TAG, "Video success upload")
+                }
+                    .addOnProgressListener { taskSnapshot ->
+                        val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                        progressDoalog.progress = progress.toInt()
+                    }.addOnPausedListener {
+
+                    }
+                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
+                        }
+                        return@Continuation pictureRef.downloadUrl
+                    }).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val downloadUri = task.result
+                            progressDoalog.dismiss()
+                            movieFile!!.delete()
+                            doAsync {
+                                db!!.fileDao().insert(
+                                    com.speciial.travelchest.model.File(0, 2, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                                )
+                            }
+                        }
+                    }
+            } else {
+                doAsync {
+                    db!!.fileDao().insert(
+                        com.speciial.travelchest.model.File(0, 2, mCurrentVideoPath, Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
+                        )
+                    )
+                }
             }
         }
     }
@@ -306,4 +430,13 @@ class HomeFragment : Fragment() {
 
     }
 
+    private fun createProgressDialog(type:String):ProgressDialog{
+        val progressDoalog = ProgressDialog(activity as MainActivity)
+        progressDoalog.max = 100
+        progressDoalog.setMessage("Uploading $type..")
+        progressDoalog.setTitle("Upload $type to the cloud")
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDoalog.show()
+        return progressDoalog
+    }
 }
