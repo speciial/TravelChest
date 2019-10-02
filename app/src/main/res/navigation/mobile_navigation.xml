@@ -11,4 +11,8 @@
         android:id="@+id/nav_ar"
         android:name="com.speciial.travelchest.ui.ar.ArFragment"
         android:label="ArFragment" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.speciial.travelchest.ui.profile.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>
