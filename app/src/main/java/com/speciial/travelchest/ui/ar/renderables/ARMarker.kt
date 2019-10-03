@@ -47,7 +47,7 @@ class ARMarker(
     }
 
     fun updateTranslation(pos: Vector3) {
-        placementNode.localPosition = pos.normalized().scaled(0.95f)
+        placementNode.localPosition = pos
     }
 
     fun adjustOrientation(from: Vector3, to: Vector3) {

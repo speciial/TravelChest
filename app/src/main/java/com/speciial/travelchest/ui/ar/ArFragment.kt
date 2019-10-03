@@ -1,5 +1,7 @@
 package com.speciial.travelchest.ui.ar
 
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,26 +38,49 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
     private lateinit var locationClient: FusedLocationProviderClient
     private var locationInCoordSpace: Vector3? = null
 
+    private fun convertLocationToXYZ(lat: Double, lng: Double) {
+        // calculating the xzy coordinates on a sphere with radius = 0.5m
+        val phi = (90 - lat) * (kotlin.math.PI / 180.0f)
+        val theta = (lng + 180) * (kotlin.math.PI / 180.0f)
+
+        val x = -(kotlin.math.sin(phi) * kotlin.math.cos(theta))
+        val y = (kotlin.math.cos(phi))
+        val z = (kotlin.math.sin(phi) * kotlin.math.sin(theta))
+        locationInCoordSpace = Vector3(x.toFloat(), y.toFloat(), z.toFloat())
+        locationInCoordSpace = locationInCoordSpace!!.normalized().scaled(ARGlobe.DEFAULT_RADIUS - 0.005f)
+        locationInCoordSpace!!.y += ARGlobe.DEFAULT_RADIUS
+
+        // TODO(@speciial): Clean up
+        Log.d(TAG, "X: $x, Y: $y, Z: $z")
+    }
+
+    private fun getLocationFromCity(cityName: String) {
+        val coder = Geocoder(activity)
+        val address: List<Address>
+
+        try {
+            address = coder.getFromLocationName(cityName, 5)
+            if (address == null) {
+                return
+            }
+            for (a in address) {
+                Log.d(TAG, a.toString())
+            }
+
+            convertLocationToXYZ(address[0].latitude, address[0].longitude)
+        } catch (e: Exception) {
+            // LOG
+        }
+    }
+
     private fun getLastLocation() {
         locationClient = LocationServices.getFusedLocationProviderClient(activity as MainActivity)
         locationClient.lastLocation.addOnCompleteListener(activity as MainActivity) { task ->
             if (task.isSuccessful && task.result != null) {
-
-                val lat = task.result!!.latitude
-                val lng = task.result!!.longitude
-
-                // calculating the xzy coordinates on a sphere with radius = 0.5m
-                val phi = (90 - lat) * (kotlin.math.PI / 180.0f)
-                val theta = (lng + 180) * (kotlin.math.PI / 180.0f)
-
-                val x = -(0.5 * kotlin.math.sin(phi) * kotlin.math.cos(theta))
-                val y = (0.5 * kotlin.math.cos(phi)) + ARGlobe.DEFAULT_RADIUS
-                val z = (0.5 * kotlin.math.sin(phi) * kotlin.math.sin(theta))
-                locationInCoordSpace = Vector3(x.toFloat(), y.toFloat(), z.toFloat())
+                convertLocationToXYZ(task.result!!.latitude, task.result!!.longitude)
 
                 // TODO(@speciial): clean up
                 Log.d(TAG, "Lat: ${task.result!!.latitude},Lng: ${task.result!!.longitude}")
-                Log.d(TAG, "X: $x, Y: $y, Z: $z")
             }
         }
     }
@@ -77,6 +102,7 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         // TODO(@speciial): Why is it so stupidly hard to persist a scene
         //                  through a orientation change event??
         // arFragment.arSceneView.arFrame!!.
+
     }
 
     override fun onResume() {
@@ -98,7 +124,8 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_ar, container, false)
 
-        getLastLocation()
+        // getLastLocation()
+        getLocationFromCity("Miami")
 
         arFragment = childFragmentManager.findFragmentById(R.id.sceneform_fragment) as ArFragment
 
@@ -112,6 +139,8 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
             earthAnchorNode = AnchorNode(hitResult.createAnchor())
             earthAnchorNode!!.setParent(arFragment.arSceneView.scene)
+
+            arFragment.arSceneView.session!!.createAnchor(earthAnchorNode!!.anchor!!.pose)
 
             globe =
                 ARGlobe(
