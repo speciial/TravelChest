@@ -20,8 +20,13 @@
     <string name="contentdescription_avatar">Avatar of the profile</string>
     <string name="sign_out">Sign Out</string>
     <string name="nav_home">Home</string>
-    <string name="nav_profile">Profile</string>
+    <string name="nav_preferences">Preferences</string>
     <string name="nav_ar">Ar</string>
     <string name="not_connected">Not connected</string>
+    <string name="nav_settings">Settings</string>
+
+    <string name="label_fragment_home">Home</string>
+    <string name="label_fragment_preferences">Preferences</string>
+    <string name="label_fragment_ar">Augmented Reality</string>
 
 </resources>

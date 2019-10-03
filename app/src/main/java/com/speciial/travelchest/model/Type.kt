@@ -10,12 +10,21 @@ data class Type (
     @ColumnInfo(name = "type_id")
     val uid:Int,
     val name:String
-)
+) {
+    companion object {
+        const val PICTURE = 1
+        const val VIDEO = 2
+        const val SOUND = 3
+        const val PICTURE_STRING = "picture"
+        const val VIDEO_STRING = "movie"
+        const val SOUND_STRING = "sound"
+    }
+}
 
 object DataType{
     val populateData = listOf(
-        Type(1,"Picture"),
-        Type(2,"Video"),
-        Type(3,"Audio")
+        Type(1,Type.PICTURE_STRING),
+        Type(2,Type.VIDEO_STRING),
+        Type(3,Type.SOUND_STRING)
     )
 }

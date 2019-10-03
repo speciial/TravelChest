@@ -3,7 +3,6 @@ package com.speciial.travelchest.ui.home
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
-import android.media.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -31,32 +30,44 @@ import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.Location
+import com.speciial.travelchest.model.Type
+import com.speciial.travelchest.ui.home.audio.AudioDialog
+import com.speciial.travelchest.ui.home.audio.PlayAudio
+import com.speciial.travelchest.ui.home.audio.Record
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
 class HomeFragment : Fragment() {
 
-    val REQUEST_IMAGE_CAPTURE = 1
-    val REQUEST_VIDEO_CAPTURE = 2
-    var mCurrentPhotoPath: String = ""
-    var mCurrentVideoPath: String = ""
+    companion object {
+        private const val REQUEST_IMAGE_CAPTURE = 1
+        private const val REQUEST_VIDEO_CAPTURE = 2
+    }
+
+    private var mCurrentPhotoPath: String = ""
+    private var mCurrentVideoPath: String = ""
+    private var mCurrentSoundPath: String = ""
+
+    private var imageFile:File ?= null
+    private var movieFile:File ?= null
+    private var soundFile:File ?= null
+
     private var lastLocation: android.location.Location? = null
     private lateinit var locationClient: FusedLocationProviderClient
 
-    private var recRunning:Boolean = false
     private var mThreadRecord:Thread ?= null
     private var mThreadPlay:Thread ?= null
+    private var record:Record ?= null
+
     private var currentUser: FirebaseUser ?= null
     private lateinit var auth: FirebaseAuth
     lateinit var storage: FirebaseStorage
-
-
-    private var imageFile:File ?= null
-    private var  movieFile:File ?= null
 
     private var db:TravelChestDatabase ?= null
 
@@ -88,9 +99,6 @@ class HomeFragment : Fragment() {
 
 
             }
-
-
-
         }
         root.findViewById<ImageButton>(R.id.home_picture).setOnClickListener{
             buttonPictureListener()
@@ -141,22 +149,28 @@ class HomeFragment : Fragment() {
     }
 
     private fun buttonAudioListener(){
-        val dialog = AudioDialog(activity as MainActivity, "Record an audio","Press the start button to record, Press stop when you have finished")
-        var recFile:File ?= null
-        val recFileName= "temprecord.raw"
+        val dialog = AudioDialog(
+            activity as MainActivity,
+            "Record an audio",
+            "Press the start button to record, Press stop when you have finished"
+        )
         val storageDir= activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
         dialog.startButton!!.setOnClickListener {
-            val myRunnable= Record()
-            mThreadRecord= Thread(myRunnable)
+            record = Record(activity as MainActivity)
+            mThreadRecord= Thread(record)
             mThreadRecord!!.start()
         }
         dialog.stopButton!!.setOnClickListener {
-            recRunning = false
+            if(record != null)
+                record!!.stopRecord()
         }
         dialog.playButton!!.setOnClickListener {
             try {
-                recFile = File(storageDir.toString() + "/" + recFileName)
-                val inputStream = FileInputStream(recFile!!)
+                val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
+                soundFile = File(storageDir.toString() + "/" + fileName + ".raw")
+                mCurrentSoundPath = soundFile!!.absolutePath
+
+                val inputStream = FileInputStream(soundFile!!)
                 val myRunnable = PlayAudio(inputStream)
                 mThreadPlay = Thread(myRunnable)
                 mThreadPlay!!.start()
@@ -165,53 +179,19 @@ class HomeFragment : Fragment() {
             }
         }
         dialog.saveButton!!.setOnClickListener {
-            val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
+
             try {
-                if(recFile == null)
+                if(soundFile == null)
                     Toast.makeText(activity as MainActivity, "No audio saved", Toast.LENGTH_LONG).show()
                 else {
                     dialog.dismiss()
-                    val filesave = File(storageDir.toString() + "/" + fileName + ".raw")
-                    recFile?.copyTo(filesave)
-                    recFile?.delete()
-                    if(currentUser != null){
-                        val storageRef = storage.reference
-                        val file = Uri.fromFile(File(mCurrentPhotoPath))
-                        val pictureRef = storageRef.child(currentUser!!.uid + "/images/${file.lastPathSegment}")
-                        val uploadTask = pictureRef.putFile(file)
-                        val progressDoalog = createProgressDialog("sound")
-                        uploadTask.addOnSuccessListener {
-                            Log.e(MainActivity.TAG, "Sound success upload")
-                        }
-                            .addOnProgressListener { taskSnapshot ->
-                                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
-                                progressDoalog.progress = progress.toInt()
-                            }.addOnPausedListener {
 
-                            }
-                            .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                                if (!task.isSuccessful) {
-                                    task.exception?.let {
-                                        throw it
-                                    }
-                                }
-                                return@Continuation pictureRef.downloadUrl
-                            }).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    val downloadUri = task.result
-                                    progressDoalog.dismiss()
-                                    filesave.delete()
-                                    doAsync {
-                                        db!!.fileDao().insert(
-                                            com.speciial.travelchest.model.File(0, 3, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
-                                        )
-                                    }
-                                }
-                            }
+                    if(currentUser != null){
+                        upload(Type.SOUND, soundFile!!)
                     } else {
                         doAsync {
                             db!!.fileDao().insert(
-                                com.speciial.travelchest.model.File(0, 3, recFile!!.path, Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
+                                com.speciial.travelchest.model.File(0, 3, mCurrentSoundPath, Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
                                 )
                             )
                         }
@@ -224,9 +204,9 @@ class HomeFragment : Fragment() {
         }
         dialog.cancelButton!!.setOnClickListener {
 
-            if(recFile !=null){
+            if(soundFile !=null){
                 try {
-                    recFile!!.delete()
+                    soundFile!!.delete()
                 } catch (e:Exception){
 
                 }
@@ -242,39 +222,7 @@ class HomeFragment : Fragment() {
 
         if(requestCode== REQUEST_IMAGE_CAPTURE && resultCode== Activity.RESULT_OK) {
             if(currentUser != null){
-                val storageRef = storage.reference
-                val file = Uri.fromFile(File(mCurrentPhotoPath))
-                val pictureRef = storageRef.child(currentUser!!.uid + "/images/${file.lastPathSegment}")
-                val uploadTask = pictureRef.putFile(file)
-                val progressDoalog = createProgressDialog("picture")
-                uploadTask.addOnSuccessListener {
-                    Log.e(MainActivity.TAG, "Image success upload")
-                }
-                    .addOnProgressListener { taskSnapshot ->
-                        val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
-                        progressDoalog.progress = progress.toInt()
-                    }.addOnPausedListener {
-
-                    }
-                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
-                        }
-                        return@Continuation pictureRef.downloadUrl
-                    }).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val downloadUri = task.result
-                            progressDoalog.dismiss()
-                            imageFile!!.delete()
-                            doAsync {
-                                db!!.fileDao().insert(
-                                    com.speciial.travelchest.model.File(0, 1, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
-                                )
-                            }
-                        }
-                    }
+                upload(Type.PICTURE, imageFile!!)
             } else {
                 doAsync {
                     db!!.fileDao().insert(
@@ -287,39 +235,7 @@ class HomeFragment : Fragment() {
 
         if(requestCode== REQUEST_VIDEO_CAPTURE && resultCode== Activity.RESULT_OK) {
             if(currentUser != null){
-                val storageRef = storage.reference
-                val file = Uri.fromFile(File(mCurrentVideoPath))
-                val pictureRef = storageRef.child(currentUser!!.uid + "/movies/${file.lastPathSegment}")
-                val uploadTask = pictureRef.putFile(file)
-                val progressDoalog = createProgressDialog("movie")
-                uploadTask.addOnSuccessListener {
-                    Log.e(MainActivity.TAG, "Video success upload")
-                }
-                    .addOnProgressListener { taskSnapshot ->
-                        val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
-                        progressDoalog.progress = progress.toInt()
-                    }.addOnPausedListener {
-
-                    }
-                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
-                        }
-                        return@Continuation pictureRef.downloadUrl
-                    }).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val downloadUri = task.result
-                            progressDoalog.dismiss()
-                            movieFile!!.delete()
-                            doAsync {
-                                db!!.fileDao().insert(
-                                    com.speciial.travelchest.model.File(0, 2, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
-                                )
-                            }
-                        }
-                    }
+                upload(Type.VIDEO,movieFile!!)
             } else {
                 doAsync {
                     db!!.fileDao().insert(
@@ -343,91 +259,58 @@ class HomeFragment : Fragment() {
 
 
 
-    private inner class Record: Runnable{
-        override fun run() {
-            recRunning = true
-            var recFile:File ?= null
 
-            val recFileName= "temprecord.raw"
-            val storageDir= activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-            try{
-                recFile = File(storageDir.toString() + "/"+ recFileName)
-            } catch(ex: IOException) {
+    private fun upload(type:Int, fileToDelete:File){
+        var typeString = "null"
+        var path = "null"
+
+        when(type){
+            Type.PICTURE -> {
+                typeString = Type.PICTURE_STRING
+                path = mCurrentPhotoPath
             }
-            try {
-                val outputStream = FileOutputStream(recFile!!)
-                val bufferedOutputStream = BufferedOutputStream(outputStream)
-                val dataOutputStream = DataOutputStream(bufferedOutputStream)
-                val minBufferSize= AudioRecord.getMinBufferSize(44100,
-                    AudioFormat.CHANNEL_OUT_STEREO,
-                    AudioFormat.ENCODING_PCM_16BIT)
-                val aFormat= AudioFormat.Builder()
-                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setSampleRate(44100)
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
-                    .build()
-                val recorder= AudioRecord.Builder()
-                    .setAudioSource(MediaRecorder.AudioSource.MIC)
-                    .setAudioFormat(aFormat)
-                    .setBufferSizeInBytes(minBufferSize)
-                    .build()
-                val audioData= ByteArray(minBufferSize)
-                recorder.startRecording()
-                while(recRunning) {
-                    val numofBytes= recorder.read(audioData, 0, minBufferSize)
-                    if(numofBytes>0) {
-                        dataOutputStream.write(audioData)
+            Type.VIDEO -> {
+                typeString = Type.VIDEO_STRING
+                path = mCurrentVideoPath
+            }
+            Type.SOUND -> {
+                typeString = Type.SOUND_STRING
+                path = mCurrentSoundPath
+            }
+        }
+        val storageRef = storage.reference
+        val file = Uri.fromFile(File(path))
+        val pictureRef = storageRef.child(currentUser!!.uid + "/${typeString}s/${file.lastPathSegment}")
+        val uploadTask = pictureRef.putFile(file)
+        val progressDoalog = createProgressDialog(typeString)
+        uploadTask.addOnSuccessListener {
+            Log.e(MainActivity.TAG, "$typeString success upload")
+        }
+            .addOnProgressListener { taskSnapshot ->
+                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                progressDoalog.progress = progress.toInt()
+            }.addOnPausedListener {
+
+            }
+            .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
                     }
                 }
-                recorder.stop()
-                dataOutputStream.close()
-            } catch(e: IOException) {
-                //e.printStackTrace()
-            }
-        }
-
-    }
-    private inner class PlayAudio(val inputStream: InputStream):Runnable{
-        override fun run() {
-            val track1: AudioTrack?
-            val minBufferSize= AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT)
-            val aBuilder= AudioTrack.Builder()
-            val aAttr: AudioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-            val aFormat: AudioFormat= AudioFormat.Builder()
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .setSampleRate(44100)
-                .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
-                .build()
-            track1 = aBuilder.setAudioAttributes(aAttr)
-                .setAudioFormat(aFormat)
-                .setBufferSizeInBytes(minBufferSize)
-                .build()
-            track1.setVolume(10.0f)
-            track1.play()
-            var i:Int
-            val buffer= ByteArray(minBufferSize)
-            try{
-                i = inputStream.read(buffer, 0, minBufferSize)
-                while(i != -1) {
-                    track1.write(buffer, 0, i)
-                    i = inputStream.read(buffer, 0, minBufferSize)
+                return@Continuation pictureRef.downloadUrl
+            }).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    progressDoalog.dismiss()
+                    fileToDelete.delete()
+                    doAsync {
+                        db!!.fileDao().insert(
+                            com.speciial.travelchest.model.File(0, type, downloadUri.toString(), Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                        )
+                    }
                 }
-            } catch(e: IOException) {
-                e.printStackTrace()
             }
-            try{
-                //inputStream.close()
-            } catch(e: IOException) {
-                e.printStackTrace()
-            }
-            track1.stop()
-            track1.release()
-        }
-
     }
 
     private fun createProgressDialog(type:String):ProgressDialog{

@@ -1,4 +1,4 @@
-package com.speciial.travelchest.ui.home
+package com.speciial.travelchest.ui.home.audio
 
 import android.app.Activity
 import android.app.Dialog

@@ -6,13 +6,13 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.speciial.travelchest.ui.home.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="@string/label_fragment_home" />
     <fragment
         android:id="@+id/nav_ar"
         android:name="com.speciial.travelchest.ui.ar.ArFragment"
-        android:label="ArFragment" />
+        android:label="@string/label_fragment_ar" />
     <fragment
-        android:id="@+id/nav_profile"
-        android:name="com.speciial.travelchest.ui.profile.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:id="@+id/nav_preferences"
+        android:name="com.speciial.travelchest.ui.preferences.PreferencesFragment"
+        android:label="@string/label_fragment_preferences" />
 </navigation>
