@@ -47,7 +47,8 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         val y = (kotlin.math.cos(phi))
         val z = (kotlin.math.sin(phi) * kotlin.math.sin(theta))
         locationInCoordSpace = Vector3(x.toFloat(), y.toFloat(), z.toFloat())
-        locationInCoordSpace = locationInCoordSpace!!.normalized().scaled(ARGlobe.DEFAULT_RADIUS - 0.005f)
+        locationInCoordSpace =
+            locationInCoordSpace!!.normalized().scaled(ARGlobe.DEFAULT_RADIUS - 0.005f)
         locationInCoordSpace!!.y += ARGlobe.DEFAULT_RADIUS
 
         // TODO(@speciial): Clean up
@@ -101,8 +102,9 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
     fun onUpdate(frameTime: FrameTime) {
         // TODO(@speciial): Why is it so stupidly hard to persist a scene
         //                  through a orientation change event??
-        // arFragment.arSceneView.arFrame!!.
-
+        if (billboard != null) {
+            billboard!!.adjustOrientation(arFragment.arSceneView.scene.camera.worldPosition)
+        }
     }
 
     override fun onResume() {

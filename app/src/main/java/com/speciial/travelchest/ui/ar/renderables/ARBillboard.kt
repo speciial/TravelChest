@@ -60,14 +60,13 @@ class ARBillboard(
     }
 
     fun adjustOrientation(camPos: Vector3) {
-        // TODO(@speciial): adjust the billboards orientation so that it
-        //                  always faces the camera!
-        /*
-        val bbPos = placementNode.worldPosition
-        val lookDir = Vector3.subtract(camPos, bbPos)
+        // TODO: improve the rotation
+        val bb = placementNode.worldPosition
+
+        val lookDir = Vector3.subtract(bb, camPos)
         val lookRot = Quaternion.lookRotation(lookDir, Vector3.up())
+
         placementNode.localRotation = lookRot
-         */
     }
 
     fun toggleVisibility() {
