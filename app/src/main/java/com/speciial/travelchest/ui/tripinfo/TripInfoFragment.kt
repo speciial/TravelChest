@@ -22,7 +22,7 @@ class TripInfoFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_trip_info, container, false)
 
-        val gridLayoutManager = GridLayoutManager(context!!, 4)
+        val gridLayoutManager = GridLayoutManager(context!!, 3)
 
         viewManager = gridLayoutManager
 
