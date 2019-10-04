@@ -29,4 +29,7 @@
     <string name="label_fragment_preferences">Preferences</string>
     <string name="label_fragment_ar">Augmented Reality</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

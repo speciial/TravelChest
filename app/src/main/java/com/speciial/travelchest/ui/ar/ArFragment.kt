@@ -70,7 +70,7 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
 
             convertLocationToXYZ(address[0].latitude, address[0].longitude)
         } catch (e: Exception) {
-            // LOG
+            // TODO(@speciial): Log
         }
     }
 

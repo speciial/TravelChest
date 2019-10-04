@@ -16,12 +16,12 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
@@ -49,6 +49,9 @@ class HomeFragment : Fragment() {
         private const val REQUEST_IMAGE_CAPTURE = 1
         private const val REQUEST_VIDEO_CAPTURE = 2
     }
+
+    private lateinit var cardViewPager: ViewPager
+    private lateinit var cardViewTabs: TabLayout
 
     private var mCurrentPhotoPath: String = ""
     private var mCurrentVideoPath: String = ""
@@ -80,7 +83,6 @@ class HomeFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         storage = FirebaseStorage.getInstance()
         currentUser = auth.currentUser
-        root.findViewById<RecyclerView>(R.id.home_recyclerview).layoutManager = LinearLayoutManager(activity as MainActivity)
 
         getLastLocation()
 
@@ -88,16 +90,12 @@ class HomeFragment : Fragment() {
 
         doAsync {
             val fileListLiveData = db!!.fileDao().getAll()
-            uiThread {_ ->
+            uiThread {
                 fileListLiveData.observe(activity as MainActivity, Observer { fileList ->
                     fileList.forEach {file ->
                         Log.e("DBG_FILE",file.toString())
-
                     }
-                    //root.findViewById<RecyclerView>(R.id.home_recyclerview).adapter = HomeAdapter(fileList)
                 })
-
-
             }
         }
         root.findViewById<ImageButton>(R.id.home_picture).setOnClickListener{
@@ -109,6 +107,11 @@ class HomeFragment : Fragment() {
         root.findViewById<ImageButton>(R.id.home_audio).setOnClickListener{
             buttonAudioListener()
         }
+
+        cardViewPager = root.findViewById(R.id.home_card_pager)
+        cardViewPager.adapter = TripCardAdapter(activity!!.supportFragmentManager)
+        cardViewTabs = root.findViewById(R.id.home_card_pager_tabs)
+        cardViewTabs.setupWithViewPager(cardViewPager, true)
 
         return root
     }
