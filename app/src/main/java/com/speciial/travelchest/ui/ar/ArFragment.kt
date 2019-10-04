@@ -127,7 +127,7 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         val root = inflater.inflate(R.layout.fragment_ar, container, false)
 
         // getLastLocation()
-        getLocationFromCity("Miami")
+        getLocationFromCity("Helsinki")
 
         arFragment = childFragmentManager.findFragmentById(R.id.sceneform_fragment) as ArFragment
 

@@ -1,0 +1,28 @@
+package com.speciial.travelchest.ui.home
+
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.google.android.material.card.MaterialCardView
+import com.speciial.travelchest.R
+
+class TripCardFragment(private val tripCardListener: TripCardAdapter.TripCardListener, private val cardIndex: Int) : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val root = inflater.inflate(R.layout.fragment_trip_card, container, false)
+
+        root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
+            tripCardListener.onTripCardClick(cardIndex)
+        }
+
+        return root
+    }
+
+
+}

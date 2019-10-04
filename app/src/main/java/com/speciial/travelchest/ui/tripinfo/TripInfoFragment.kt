@@ -1,4 +1,4 @@
-package com.speciial.travelchest.ui.home
+package com.speciial.travelchest.ui.tripinfo
 
 
 import android.os.Bundle
@@ -8,12 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.speciial.travelchest.R
 
-class TripCard : Fragment() {
+class TripInfoFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_trip_card, container, false)
+        val root = inflater.inflate(R.layout.fragment_trip_info, container, false)
+
+
+
+        return root
     }
+
+
 }

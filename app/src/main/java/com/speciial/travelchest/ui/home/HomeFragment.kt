@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.speciial.travelchest.MainActivity
+import com.speciial.travelchest.MainActivity.Companion.TAG
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.Location
@@ -43,7 +44,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
 
     companion object {
         private const val REQUEST_IMAGE_CAPTURE = 1
@@ -109,14 +110,26 @@ class HomeFragment : Fragment() {
         }
 
         cardViewPager = root.findViewById(R.id.home_card_pager)
-        cardViewPager.adapter = TripCardAdapter(activity!!.supportFragmentManager)
+        cardViewPager.adapter = TripCardAdapter(activity!!.supportFragmentManager, this)
+        cardViewPager.setCurrentItem(1, false)
         cardViewTabs = root.findViewById(R.id.home_card_pager_tabs)
         cardViewTabs.setupWithViewPager(cardViewPager, true)
 
         return root
     }
 
-
+    override fun onTripCardClick(cardIndex: Int) {
+        when(cardIndex){
+            0 -> {
+                // TODO: create new trip
+                Log.d(TAG, "Create new trip")
+            }
+            else -> {
+                // TODO: show clicked trip
+                Log.d(TAG, "Look at trip $cardIndex")
+            }
+        }
+    }
 
     private fun buttonPictureListener(){
 
@@ -218,7 +231,6 @@ class HomeFragment : Fragment() {
         }
         dialog.show()
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, recIntent: Intent?) {
