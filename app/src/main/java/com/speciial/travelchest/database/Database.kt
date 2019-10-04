@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 
 
 @Database(entities = [(Trip::class),(Location::class),(File::class),(Type::class)], version = 1)
-@TypeConverters(FileConverter::class,LocationConverter::class)
+@TypeConverters(FileConverter::class)
 abstract class TravelChestDatabase: RoomDatabase() {
     abstract fun fileDao(): FileDao
     abstract fun tripDao(): TripDao

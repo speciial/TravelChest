@@ -1,9 +1,6 @@
 package com.speciial.travelchest.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
+import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -13,38 +10,14 @@ data class Trip(
     @ColumnInfo(name = "trip_id")
     val uid:Long,
     val name:String,
-
-    val locList:ArrayList<Location>? = null,
-    
+    val tripCiy:String,
+    @Embedded
+    val location:Location,
+    val startDate:String,
+    val endDate:String,
     val fileList:ArrayList<File>? = null
 )
 
-class LocationConverter {
-
-    @TypeConverter
-    fun fromLocationList(location: ArrayList<Location>?): String? {
-        if (location == null) {
-            return null
-        }
-        val gson = Gson()
-        val type = object : TypeToken<ArrayList<Location>>() {
-
-        }.type
-        return gson.toJson(location, type)
-    }
-
-    @TypeConverter
-    fun toLocationlist(locationString: String?): ArrayList<Location>? {
-        if (locationString == null) {
-            return null
-        }
-        val gson = Gson()
-        val type = object : TypeToken<ArrayList<Location>>() {
-
-        }.type
-        return gson.fromJson(locationString, type)
-    }
-}
 class FileConverter {
 
     @TypeConverter

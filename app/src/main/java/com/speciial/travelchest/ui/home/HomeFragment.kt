@@ -91,11 +91,12 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         db = TravelChestDatabase.get(activity as MainActivity)
 
         doAsync {
-            val fileListLiveData = db!!.fileDao().getAll()
+            val fileListLiveData = db!!.tripDao().getAll()
             uiThread {
                 fileListLiveData.observe(activity as MainActivity, Observer { fileList ->
-                    fileList.forEach {file ->
-                        Log.e("DBG_FILE",file.toString())
+                    fileList.forEach {trip ->
+                        Log.e("DBG_TRIP",trip.toString())
+
                     }
                 })
             }
@@ -122,7 +123,7 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     override fun onTripCardClick(cardIndex: Int) {
         when(cardIndex){
             0 -> {
-                // TODO: create new trip
+                findNavController().navigate(R.id.nav_trip_add)
                 Log.d(TAG, "Create new trip")
             }
             else -> {
