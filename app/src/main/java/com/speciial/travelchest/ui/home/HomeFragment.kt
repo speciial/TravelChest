@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -125,8 +126,9 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                 Log.d(TAG, "Create new trip")
             }
             else -> {
-                // TODO: show clicked trip
                 Log.d(TAG, "Look at trip $cardIndex")
+
+                findNavController().navigate(R.id.nav_trip_info)
             }
         }
     }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorAccent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="fill"
+    android:layout_columnWeight="1">
+
+    <ImageView
+        android:id="@+id/grid_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_image_black_24dp" />
+
+</FrameLayout>
