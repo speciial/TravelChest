@@ -30,9 +30,10 @@
 
     <LinearLayout
         android:id="@+id/home_menu_bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:orientation="horizontal"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,8 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/home_picture_content_desc"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+            android:width="50dp"
+            android:height="50dp"
             android:src="@drawable/ic_home_camera" />
 
         <ImageButton
@@ -54,9 +55,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_movie_content_desc"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+            android:width="50dp"
+            android:height="50dp"
             android:src="@drawable/ic_home_movie" />
+
+        <ImageButton
+            android:id="@+id/home_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:contentDescription="@string/home_ar_content_desc"
+            android:width="75dp"
+            android:height="75dp"
+            app:srcCompat="@drawable/ic_menu_ar" />
 
         <ImageButton
             android:id="@+id/home_audio"
@@ -64,9 +75,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_audio_content_desc"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+            android:width="50dp"
+            android:height="50dp"
             android:src="@drawable/ic_home_audio" />
+
+        <ImageButton
+            android:id="@+id/home_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="50dp"
+            android:height="50dp"
+            android:layout_marginStart="32dp"
+            android:contentDescription="@string/home_file_content_desc"
+            app:srcCompat="@drawable/ic_audio_play" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

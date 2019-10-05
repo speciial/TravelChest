@@ -39,5 +39,7 @@
     <string name="trip_label_date">Date</string>
     <string name="trip_date_button_label">Choose a date</string>
     <string name="trip_add_the_trip">Add the trip</string>
+    <string name="home_ar_content_desc">Button to open ar view</string>
+    <string name="home_file_content_desc">Button to import file from the phone</string>
 
 </resources>

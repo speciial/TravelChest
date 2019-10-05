@@ -12,9 +12,9 @@ data class Type (
     val name:String
 ) {
     companion object {
-        const val PICTURE = 1
+        const val IMAGE = 1
         const val VIDEO = 2
-        const val SOUND = 3
+        const val AUDIO = 3
         const val PICTURE_STRING = "picture"
         const val VIDEO_STRING = "movie"
         const val SOUND_STRING = "sound"

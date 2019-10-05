@@ -11,10 +11,6 @@
         android:id="@+id/nav_preferences"
         android:icon="@drawable/ic_menu_preferences"
         android:title="@string/nav_preferences" />
-    <item
-        android:id="@+id/nav_ar"
-        android:icon="@drawable/ic_menu_ar"
-        android:title="@string/nav_ar" />
 
 
 
