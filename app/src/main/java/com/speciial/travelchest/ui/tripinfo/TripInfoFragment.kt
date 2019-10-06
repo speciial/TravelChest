@@ -29,7 +29,7 @@ class TripInfoFragment : Fragment() {
 
         val tripID = arguments!!.getLong("tripID")
         doAsync {
-            val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().getTripByID(tripID)
+            val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID)
             uiThread {
                 root.findViewById<TextView>(R.id.trip_info_title).text = trip.name
                 root.findViewById<TextView>(R.id.trip_info_subtitle).text = trip.tripCiy
