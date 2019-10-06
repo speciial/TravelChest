@@ -64,23 +64,23 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     private var mCurrentVideoPath: String = ""
     private var mCurrentSoundPath: String = ""
 
-    private lateinit var imageFile:File
-    private lateinit var movieFile:File
-    private lateinit var soundFile:File
+    private lateinit var imageFile: File
+    private lateinit var movieFile: File
+    private lateinit var soundFile: File
 
     private var lastLocation: android.location.Location? = null
     private lateinit var locationClient: FusedLocationProviderClient
 
-    private var mThreadRecord:Thread ?= null
-    private var mThreadPlay:Thread ?= null
-    private var record:Record ?= null
+    private var mThreadRecord: Thread? = null
+    private var mThreadPlay: Thread? = null
+    private var record: Record? = null
 
-    private var currentUser: FirebaseUser ?= null
+    private var currentUser: FirebaseUser? = null
     private lateinit var auth: FirebaseAuth
     lateinit var storage: FirebaseStorage
 
-    private lateinit var db:TravelChestDatabase
-    private lateinit var prefs:SharedPreferences
+    private lateinit var db: TravelChestDatabase
+    private lateinit var prefs: SharedPreferences
 
 
     override fun onCreateView(
@@ -94,7 +94,7 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         currentUser = auth.currentUser
 
 
-        prefs = customPreference( activity as MainActivity, PREF_NAME)
+        prefs = customPreference(activity as MainActivity, PREF_NAME)
         getLastLocation()
 
         db = TravelChestDatabase.get(activity as MainActivity)
@@ -104,46 +104,67 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
             val fileListLiveData = db.fileDao().getAll()
             uiThread {
                 tripListLiveData.observe(activity as MainActivity, Observer { fileList ->
-                    fileList.forEach {trip ->
-                        Log.e("DBG_TRIP",trip.toString())
+                    fileList.forEach { trip ->
+                        Log.e("DBG_TRIP", trip.toString())
 
                     }
                 })
                 fileListLiveData.observe(activity as MainActivity, Observer { fileList ->
-                    fileList.forEach {file ->
-                        Log.e("DBG_FILE",file.toString())
+                    fileList.forEach { file ->
+                        Log.e("DBG_FILE", file.toString())
 
                     }
                 })
             }
         }
-        root.findViewById<ImageButton>(R.id.home_picture).setOnClickListener{
+        root.findViewById<ImageButton>(R.id.home_picture).setOnClickListener {
             buttonPictureListener()
         }
-        root.findViewById<ImageButton>(R.id.home_video).setOnClickListener{
+        root.findViewById<ImageButton>(R.id.home_video).setOnClickListener {
             buttonVideoListener()
         }
-        root.findViewById<ImageButton>(R.id.home_audio).setOnClickListener{
+        root.findViewById<ImageButton>(R.id.home_audio).setOnClickListener {
             buttonAudioListener()
         }
-        root.findViewById<ImageButton>(R.id.home_ar).setOnClickListener{
+        root.findViewById<ImageButton>(R.id.home_ar).setOnClickListener {
             findNavController().navigate(R.id.nav_ar)
         }
-        root.findViewById<ImageButton>(R.id.home_file).setOnClickListener{
+        root.findViewById<ImageButton>(R.id.home_file).setOnClickListener {
             buttonFileListener()
         }
 
-        cardViewPager = root.findViewById(R.id.home_card_pager)
-        cardViewPager.adapter = TripCardAdapter(activity!!.supportFragmentManager, this)
-        cardViewPager.setCurrentItem(1, false)
-        cardViewTabs = root.findViewById(R.id.home_card_pager_tabs)
-        cardViewTabs.setupWithViewPager(cardViewPager, true)
+        setupTripCards(root)
+
 
         return root
     }
 
+    private fun setupTripCards(root: View) {
+
+        cardViewPager = root.findViewById(R.id.home_card_pager)
+        doAsync {
+            val tripListLiveDate = db.tripDao().getAll()
+            uiThread { homeFragment ->
+                tripListLiveDate.observe(activity as MainActivity, Observer { tripList ->
+                    cardViewPager.adapter = TripCardAdapter(
+                        activity!!.supportFragmentManager,
+                        tripList,
+                        (homeFragment as TripCardAdapter.TripCardListener)
+                    )
+                    if (tripList.isNotEmpty()) {
+                        cardViewPager.setCurrentItem(1, false)
+                    }
+                })
+            }
+        }
+
+        // Setting up the dots at the bottom of the view pager
+        cardViewTabs = root.findViewById(R.id.home_card_pager_tabs)
+        cardViewTabs.setupWithViewPager(cardViewPager, true)
+    }
+
     override fun onTripCardClick(cardIndex: Int) {
-        when(cardIndex){
+        when (cardIndex) {
             0 -> {
                 findNavController().navigate(R.id.nav_trip_add)
                 Log.d(TAG, "Create new trip")
@@ -156,36 +177,40 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         }
     }
 
-    private fun buttonPictureListener(){
+    private fun buttonPictureListener() {
 
         getLastLocation()
-        imageFile= createFile(Type.IMAGE)
-        mCurrentPhotoPath= imageFile.absolutePath
-        val photoURI: Uri = FileProvider.getUriForFile(activity as MainActivity,
+        imageFile = createFile(Type.IMAGE)
+        mCurrentPhotoPath = imageFile.absolutePath
+        val photoURI: Uri = FileProvider.getUriForFile(
+            activity as MainActivity,
             "com.speciial.travelchest.ui.home",
-            imageFile)
-        val myIntent= Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if(myIntent.resolveActivity(activity!!.packageManager) != null) {
+            imageFile
+        )
+        val myIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (myIntent.resolveActivity(activity!!.packageManager) != null) {
             myIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE)
         }
     }
 
-    private fun buttonVideoListener(){
+    private fun buttonVideoListener() {
         getLastLocation()
-        movieFile= createFile(Type.VIDEO)
-        mCurrentVideoPath= movieFile.absolutePath
-        val videoURI: Uri = FileProvider.getUriForFile(activity as MainActivity,
+        movieFile = createFile(Type.VIDEO)
+        mCurrentVideoPath = movieFile.absolutePath
+        val videoURI: Uri = FileProvider.getUriForFile(
+            activity as MainActivity,
             "com.speciial.travelchest.ui.home",
-            movieFile)
-        val myIntent= Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-        if(myIntent.resolveActivity(activity!!.packageManager) != null) {
-            myIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI )
+            movieFile
+        )
+        val myIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+        if (myIntent.resolveActivity(activity!!.packageManager) != null) {
+            myIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
             startActivityForResult(myIntent, REQUEST_VIDEO_CAPTURE)
         }
     }
 
-    private fun buttonAudioListener(){
+    private fun buttonAudioListener() {
         val dialog = AudioDialog(
             activity as MainActivity,
             "Record an audio",
@@ -194,12 +219,12 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
 
         dialog.startButton!!.setOnClickListener {
             record = Record(activity as MainActivity)
-            mThreadRecord= Thread(record)
+            mThreadRecord = Thread(record)
             mThreadRecord!!.start()
         }
 
         dialog.stopButton!!.setOnClickListener {
-            if(record != null)
+            if (record != null)
                 record!!.stopRecord()
         }
 
@@ -213,29 +238,41 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                 mThreadPlay = Thread(myRunnable)
                 mThreadPlay!!.start()
             } catch (ex: IOException) {
-                Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    activity as MainActivity,
+                    "You should first record an audio",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         dialog.saveButton!!.setOnClickListener {
 
             try {
-                if(soundFile == null)
-                    Toast.makeText(activity as MainActivity, "No audio saved", Toast.LENGTH_LONG).show()
+                if (soundFile == null)
+                    Toast.makeText(
+                        activity as MainActivity,
+                        "No audio saved",
+                        Toast.LENGTH_LONG
+                    ).show()
                 else {
                     dialog.dismiss()
-                    save(Type.AUDIO,soundFile,mCurrentSoundPath)
+                    save(Type.AUDIO, soundFile, mCurrentSoundPath)
                 }
             } catch (e: IOException) {
-                Toast.makeText(activity as MainActivity, "You should first record an audio", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    activity as MainActivity,
+                    "You should first record an audio",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         }
         dialog.cancelButton!!.setOnClickListener {
 
-            if(soundFile !=null){
+            if (soundFile != null) {
                 try {
                     soundFile.delete()
-                } catch (e:Exception){
+                } catch (e: Exception) {
 
                 }
             }
@@ -245,7 +282,7 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     }
 
 
-    private fun buttonFileListener(){
+    private fun buttonFileListener() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
@@ -254,11 +291,11 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, recIntent: Intent?) {
-        if(requestCode== REQUEST_IMAGE_CAPTURE && resultCode== Activity.RESULT_OK) {
-            save(Type.IMAGE,imageFile,mCurrentPhotoPath)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            save(Type.IMAGE, imageFile, mCurrentPhotoPath)
         }
-        if(requestCode== REQUEST_VIDEO_CAPTURE && resultCode== Activity.RESULT_OK) {
-            save(Type.VIDEO,movieFile,mCurrentVideoPath)
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == Activity.RESULT_OK) {
+            save(Type.VIDEO, movieFile, mCurrentVideoPath)
 
         }
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -270,13 +307,13 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                 Log.i(TAG, "Uri: $uri")
                 val file = File(uri.path!!)
                 var type = 0
-                if(file.name.startsWith("image"))
+                if (file.name.startsWith("image"))
                     type = Type.IMAGE
-                if(file.name.startsWith("video"))
+                if (file.name.startsWith("video"))
                     type = Type.VIDEO
-                if(file.name.startsWith("audio"))
+                if (file.name.startsWith("audio"))
                     type = Type.AUDIO
-                saveFile(type,file.absolutePath)
+                saveFile(type, file.absolutePath)
 
 
             }
@@ -293,12 +330,11 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         }
     }
 
-    private fun createFile(type:Int):File{
-        val fileName= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
-        var imgPath:File? = null
+    private fun createFile(type: Int): File {
+        val fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
+        var imgPath: File? = null
         var ext = ""
-        when(type)
-        {
+        when (type) {
             Type.IMAGE -> {
                 imgPath = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 ext = ".jpg"
@@ -312,33 +348,38 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                 ext = ".raw"
             }
         }
-        return File(imgPath.toString()+"/" + fileName + ext)
+        return File(imgPath.toString() + "/" + fileName + ext)
     }
 
 
-    private fun save(type:Int, file:File, path:String){
+    private fun save(type: Int, file: File, path: String) {
 
-        if(currentUser != null && prefs.save_online)
-            upload(type,file)
+        if (currentUser != null && prefs.save_online)
+            upload(type, file)
         else
-            saveFile(type,path)
+            saveFile(type, path)
     }
 
 
-    private fun saveFile(type:Int, path:String){
+    private fun saveFile(type: Int, path: String) {
         doAsync {
             db.fileDao().insert(
-                com.speciial.travelchest.model.File(0, type, path, Location(0, lastLocation!!.latitude, lastLocation!!.longitude))
+                com.speciial.travelchest.model.File(
+                    0,
+                    type,
+                    path,
+                    Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
+                )
             )
         }
     }
 
 
-    private fun upload(type:Int, fileToDelete:File){
+    private fun upload(type: Int, fileToDelete: File) {
         var typeString = "null"
         var path = "null"
 
-        when(type){
+        when (type) {
             Type.IMAGE -> {
                 typeString = Type.PICTURE_STRING
                 path = mCurrentPhotoPath
@@ -354,7 +395,8 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         }
         val storageRef = storage.reference
         val file = Uri.fromFile(File(path))
-        val pictureRef = storageRef.child(currentUser!!.uid + "/${typeString}s/${file.lastPathSegment}")
+        val pictureRef =
+            storageRef.child(currentUser!!.uid + "/${typeString}s/${file.lastPathSegment}")
         val uploadTask = pictureRef.putFile(file)
         val progressDoalog = createProgressDialog(typeString)
         uploadTask.addOnSuccessListener {
@@ -378,12 +420,12 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                     val downloadUri = task.result
                     progressDoalog.dismiss()
                     fileToDelete.delete()
-                    saveFile(type,downloadUri.toString())
+                    saveFile(type, downloadUri.toString())
                 }
             }
     }
 
-    private fun createProgressDialog(type:String):ProgressDialog{
+    private fun createProgressDialog(type: String): ProgressDialog {
         val progressDoalog = ProgressDialog(activity as MainActivity)
         progressDoalog.max = 100
         progressDoalog.setMessage("Uploading $type..")
@@ -392,10 +434,6 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         progressDoalog.show()
         return progressDoalog
     }
-
-
-
-
 
 
 }

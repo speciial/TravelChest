@@ -10,16 +10,19 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.speciial.travelchest.MainActivity.Companion.TAG
+import com.speciial.travelchest.model.Trip
 
 class ARMarker(
-    context: Context,
-    transformationSystem: TransformationSystem,
-    anchorNode: Node
+    private val context: Context,
+    private val transformationSystem: TransformationSystem,
+    private val anchorNode: Node,
+    private val trip: Trip
 ) {
 
-    var placementNode: TransformableNode = TransformableNode(transformationSystem)
+    private val placementNode: TransformableNode = TransformableNode(transformationSystem)
 
     private lateinit var renderable: ModelRenderable
+    private lateinit var billboard: ARBillboard
 
     private var eventListener: MarkerEventListener? = null
 
@@ -38,8 +41,15 @@ class ARMarker(
                         Log.d(TAG, "Marker Clicked")
                         eventListener!!.onMarkerClick(0, placementNode)
                     }
+                    toggleBillboard()
                 }
+
+                billboard = ARBillboard(context, transformationSystem, placementNode, trip)
             }
+    }
+
+    fun toggleBillboard() {
+        billboard.toggleVisibility()
     }
 
     fun setEventListener(el: MarkerEventListener) {
@@ -52,10 +62,6 @@ class ARMarker(
 
     fun adjustOrientation(from: Vector3, to: Vector3) {
         placementNode.localRotation = Quaternion.rotationBetweenVectors(from, to)
-    }
-
-    fun scale(factor: Float) {
-        placementNode.localScale = Vector3(factor, factor, factor)
     }
 
     interface MarkerEventListener {

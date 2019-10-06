@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_card_title"
+            android:id="@+id/ar_card_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail" />
 
         <TextView
-            android:id="@+id/tv_card_subtitle"
+            android:id="@+id/ar_card_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -42,10 +42,10 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_card_title" />
+            app:layout_constraintTop_toBottomOf="@id/ar_card_title" />
 
         <TextView
-            android:id="@+id/tv_card_date"
+            android:id="@+id/ar_card_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -53,8 +53,8 @@
             android:text="@string/billboard_dummy_date"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_card_subtitle"
-            app:layout_constraintTop_toBottomOf="@+id/tv_card_title" />
+            app:layout_constraintStart_toEndOf="@+id/ar_card_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/ar_card_title" />
 
         <ImageButton
             android:layout_width="30dp"

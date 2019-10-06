@@ -3,7 +3,9 @@ package com.speciial.travelchest.ui.ar.renderables
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -12,29 +14,25 @@ import com.google.ar.sceneform.rendering.ViewSizer
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.speciial.travelchest.R
+import com.speciial.travelchest.model.Trip
 
 class ARBillboard(
-    context: Context,
+    private val context: Context,
     transformationSystem: TransformationSystem,
-    anchorNode: Node
+    private val anchorNode: Node,
+    private val trip: Trip
 ) {
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
 
-    private var isVisibil: Boolean = true
+    private var isVisible: Boolean = true
 
     private lateinit var renderable: ViewRenderable
 
     init {
-        // TODO(@speciial): adjust the position of the billboard so that
-        //                  it floats on top of the marker
-
         val temp = LayoutInflater.from(context)
         val view = temp.inflate(R.layout.default_billboard_view, null)
-
-        val input = context.assets.open("images/wallpaper.jpg")
-        view.findViewById<ImageView>(R.id.iv_thumbnail)
-            .setImageBitmap(BitmapFactory.decodeStream(input))
+        fillView(view)
 
         val cardWidthInMeterScaled = (250.0f / 250.0f) * 0.2f
         val cardHeightInMeterScaled = (190.0f / 250.0f) * 0.2f
@@ -52,11 +50,19 @@ class ARBillboard(
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
 
-                // placementNode.scaleController.
-
                 placementNode.worldRotation = Quaternion.eulerAngles(Vector3(0.0f, 0.0f, 0.0f))
                 placementNode.localPosition = Vector3(0.0f, 0.15f, 0.0f)
             }
+    }
+
+    private fun fillView(view: View) {
+        val input = context.assets.open("images/wallpaper.jpg")
+        view.findViewById<ImageView>(R.id.iv_thumbnail)
+            .setImageBitmap(BitmapFactory.decodeStream(input))
+
+        view.findViewById<TextView>(R.id.ar_card_title).text = trip.name
+        view.findViewById<TextView>(R.id.ar_card_subtitle).text = trip.tripCiy
+        view.findViewById<TextView>(R.id.ar_card_date).text = "${trip.startDate} - ${trip.endDate}"
     }
 
     fun adjustOrientation(camPos: Vector3) {
@@ -70,13 +76,12 @@ class ARBillboard(
     }
 
     fun toggleVisibility() {
-        // TODO(@speciial): this is more or less a hack and should be improved
-        if (isVisibil) {
+        if (isVisible) {
             placementNode.renderable = null
-            isVisibil = false
+            isVisible = false
         } else {
             placementNode.renderable = renderable
-            isVisibil = true
+            isVisible = true
         }
     }
 
