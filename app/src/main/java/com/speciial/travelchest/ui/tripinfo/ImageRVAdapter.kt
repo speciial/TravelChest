@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.R
 
-class ImageRVAdapter(private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
-
-    private val bitmap = BitmapFactory.decodeStream(context.assets.open("images/wallpaper.jpg"))
+class ImageRVAdapter(private val imageList: ArrayList<String>, private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
 
     class ImageRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val image: ImageView = item.findViewById(R.id.grid_image)
@@ -28,10 +26,10 @@ class ImageRVAdapter(private val context: Context) : RecyclerView.Adapter<ImageR
         return ImageRVViewHolder(view)
     }
 
-    override fun getItemCount(): Int = 100
+    override fun getItemCount(): Int = imageList.size
 
     override fun onBindViewHolder(holder: ImageRVViewHolder, position: Int) {
-        holder.image.setImageBitmap(bitmap)
+        holder.image.setImageBitmap(BitmapFactory.decodeFile(imageList[position]))
         holder.cardView.setOnClickListener { Log.d("TRAVEL_CHEST", "image clicked") }
     }
 
