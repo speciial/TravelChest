@@ -12,6 +12,9 @@ interface TripDao {
     @Query("SELECT * FROM Trip")
     fun getAll(): LiveData<List<Trip>>
 
+    @Query("SELECT * FROM Trip WHERE Trip.trip_id= :id")
+    fun getTripByID(id: Long): Trip
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(trip: Trip): Long
 

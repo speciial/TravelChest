@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -163,16 +164,17 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         cardViewTabs.setupWithViewPager(cardViewPager, true)
     }
 
-    override fun onTripCardClick(cardIndex: Int) {
-        when (cardIndex) {
-            0 -> {
+    override fun onTripCardClick(cardID: Long) {
+        when (cardID) {
+            (-1L) -> {
                 findNavController().navigate(R.id.nav_trip_add)
                 Log.d(TAG, "Create new trip")
             }
             else -> {
-                Log.d(TAG, "Look at trip $cardIndex")
+                Log.d(TAG, "Look at trip $cardID")
 
-                findNavController().navigate(R.id.nav_trip_info)
+                val bundle = bundleOf((Pair("tripID", cardID)))
+                findNavController().navigate(R.id.nav_trip_info, bundle)
             }
         }
     }

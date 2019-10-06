@@ -11,24 +11,17 @@ class TripCardAdapter(
     private val tripCardListener: TripCardListener
 ) : FragmentStatePagerAdapter(fm) {
 
-    private val fragmentCache: ArrayList<Fragment> = ArrayList()
-
-    init {
-        fragmentCache.ensureCapacity(tripList.size + 1)
-        fragmentCache.add(TripCardAddFragment(tripCardListener, 0))
-    }
-
     override fun getItem(position: Int): Fragment {
         return if (position == 0) {
-            TripCardAddFragment(tripCardListener, 0)
+            TripCardAddFragment(tripCardListener)
         } else {
-            TripCardFragment(tripList[position - 1], tripCardListener, position)
+            TripCardFragment(tripList[position - 1], tripCardListener)
         }
     }
 
     override fun getCount(): Int = (tripList.size + 1)
 
     interface TripCardListener {
-        fun onTripCardClick(cardIndex: Int)
+        fun onTripCardClick(cardID: Long)
     }
 }
