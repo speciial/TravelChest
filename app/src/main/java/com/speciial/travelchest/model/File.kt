@@ -1,11 +1,11 @@
 package com.speciial.travelchest.model
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [(ForeignKey(
-    entity = Type::class,
-    parentColumns = ["type_id"],
-    childColumns = ["type"]))])
+@Entity
 data class File (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "file_id")

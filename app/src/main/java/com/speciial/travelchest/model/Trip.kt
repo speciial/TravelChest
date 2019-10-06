@@ -15,7 +15,7 @@ data class Trip(
     val location:Location,
     val startDate:String,
     val endDate:String,
-    val fileList:ArrayList<File>? = null
+    val fileList:ArrayList<File> = ArrayList()
 )
 
 class FileConverter {

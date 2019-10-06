@@ -5,18 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.speciial.travelchest.model.*
-import java.util.concurrent.Executors
+import com.speciial.travelchest.model.File
+import com.speciial.travelchest.model.FileConverter
+import com.speciial.travelchest.model.Trip
 
 
-@Database(entities = [(Trip::class),(Location::class),(File::class),(Type::class)], version = 1)
+@Database(entities = [(Trip::class),(File::class)], version = 1)
 @TypeConverters(FileConverter::class)
 abstract class TravelChestDatabase: RoomDatabase() {
     abstract fun fileDao(): FileDao
     abstract fun tripDao(): TripDao
-    abstract fun LocationDao(): LocationDao
-    abstract fun typeDao(): TypeDao
 
     /* one and only one instance, similar to static in Java */
     companion object {
@@ -26,14 +24,6 @@ abstract class TravelChestDatabase: RoomDatabase() {
             if (sInstance == null) {
                 sInstance = Room.databaseBuilder(context.applicationContext,
                     TravelChestDatabase::class.java, "TravelChestDatabase.db")
-                    .addCallback(object : RoomDatabase.Callback() {
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            Executors.newSingleThreadScheduledExecutor().execute {
-                                sInstance!!.typeDao().insertAll(DataType.populateData)
-                            }
-                        }
-                    })
                     .build()
             }
 

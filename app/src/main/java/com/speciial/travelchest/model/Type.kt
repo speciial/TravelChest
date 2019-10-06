@@ -1,16 +1,8 @@
 package com.speciial.travelchest.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity
-data class Type (
-    @PrimaryKey
-    @ColumnInfo(name = "type_id")
-    val uid:Int,
-    val name:String
-) {
+
+class Type{
     companion object {
         const val IMAGE = 1
         const val VIDEO = 2
@@ -21,10 +13,3 @@ data class Type (
     }
 }
 
-object DataType{
-    val populateData = listOf(
-        Type(1,Type.PICTURE_STRING),
-        Type(2,Type.VIDEO_STRING),
-        Type(3,Type.SOUND_STRING)
-    )
-}

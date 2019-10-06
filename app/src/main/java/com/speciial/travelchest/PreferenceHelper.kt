@@ -30,7 +30,7 @@ object PreferenceHelper {
     }
 
     var SharedPreferences. tripId
-        get() = getInt( TRIP_ID, 0)
+        get() = getLong( TRIP_ID, 0)
         set(value) {
             editMe {
                 it.put(TRIP_ID to value)

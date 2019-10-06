@@ -33,6 +33,7 @@ import com.speciial.travelchest.MainActivity.Companion.PREF_NAME
 import com.speciial.travelchest.MainActivity.Companion.TAG
 import com.speciial.travelchest.PreferenceHelper.customPreference
 import com.speciial.travelchest.PreferenceHelper.save_online
+import com.speciial.travelchest.PreferenceHelper.tripId
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.Location
@@ -166,6 +167,7 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     override fun onTripCardClick(cardIndex: Int) {
         when (cardIndex) {
             0 -> {
+                this.onDetach()
                 findNavController().navigate(R.id.nav_trip_add)
                 Log.d(TAG, "Create new trip")
             }
@@ -363,14 +365,16 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
 
     private fun saveFile(type: Int, path: String) {
         doAsync {
-            db.fileDao().insert(
+            val trip = db.tripDao().get(prefs.tripId)
+            trip.fileList.add(
                 com.speciial.travelchest.model.File(
                     0,
                     type,
                     path,
-                    Location(0, lastLocation!!.latitude, lastLocation!!.longitude)
+                    Location(lastLocation!!.latitude, lastLocation!!.longitude)
                 )
             )
+            db.tripDao().update(trip)
         }
     }
 

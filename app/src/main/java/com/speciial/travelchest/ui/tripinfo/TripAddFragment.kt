@@ -1,6 +1,7 @@
 package com.speciial.travelchest.ui.tripinfo
 
 import android.app.DatePickerDialog
+import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -17,6 +18,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.speciial.travelchest.MainActivity
+import com.speciial.travelchest.MainActivity.Companion.PREF_NAME
+import com.speciial.travelchest.PreferenceHelper.customPreference
+import com.speciial.travelchest.PreferenceHelper.tripId
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.Location
@@ -29,6 +33,7 @@ class TripAddFragment : Fragment() {
 
     private lateinit var locationClient: FusedLocationProviderClient
     private var lastLocation:Location? = null
+    private lateinit var prefs:SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +41,7 @@ class TripAddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
+        prefs = customPreference(activity as MainActivity, PREF_NAME)
         val now = LocalDateTime.now()
         var date = "${now.year}-${now.monthValue}-${now.dayOfMonth}"
         getLastLocation()
@@ -82,10 +87,11 @@ class TripAddFragment : Fragment() {
                 tripCity = root.findViewById<EditText>(R.id.trip_add_city).text.toString()
                 location = getLocationFromCity(tripCity)!!
             }
-
+            var idTrip:Long = 0
             doAsync {
-                db.tripDao().insert(Trip(0,tripName,tripCity,location,date,"On trip"))
+               idTrip  = db.tripDao().insert(Trip(0,tripName,tripCity,location,date,"On trip"))
             }
+            prefs.tripId = idTrip
             findNavController().navigate(R.id.nav_home)
         }
 
@@ -105,7 +111,7 @@ class TripAddFragment : Fragment() {
 
         } catch (e: Exception) {
         }
-        return Location(0, address!!.latitude, address.longitude)
+        return Location(address!!.latitude, address.longitude)
     }
     private fun getCityFromLocation(location: Location): String? {
         val coder = Geocoder(activity)
@@ -128,7 +134,7 @@ class TripAddFragment : Fragment() {
         locationClient = LocationServices.getFusedLocationProviderClient(activity as MainActivity)
         locationClient.lastLocation.addOnCompleteListener(activity as MainActivity) { task ->
             if (task.isSuccessful && task.result != null) {
-                lastLocation =  Location(0,task.result!!.latitude, task.result!!.longitude)
+                lastLocation =  Location(task.result!!.latitude, task.result!!.longitude)
             }
         }
     }
