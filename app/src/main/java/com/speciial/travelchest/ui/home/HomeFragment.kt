@@ -367,15 +367,6 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
     private fun saveFile(type: Int, path: String) {
         doAsync {
             val trip = db.tripDao().get(prefs.tripId)
-
-            if(trip == null) {
-                Log.d(TAG, "Is null")
-            }else {
-
-            }
-
-            Log.d(TAG, "${prefs.tripId}")
-
             trip.fileList.add(
                 com.speciial.travelchest.model.File(
                     0,
