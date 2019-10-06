@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.R
 
-class TripCardAddFragment(private val tripCardListener: TripCardAdapter.TripCardListener, private val cardIndex: Int) : Fragment() {
+class TripCardAddFragment(private val tripCardListener: TripCardAdapter.TripCardListener) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,7 +18,7 @@ class TripCardAddFragment(private val tripCardListener: TripCardAdapter.TripCard
         val root = inflater.inflate(R.layout.fragment_trip_card_add, container, false)
 
         root.findViewById<MaterialCardView>(R.id.home_card_view_add).setOnClickListener {
-            tripCardListener.onTripCardClick(cardIndex)
+            tripCardListener.onTripCardClick(-1)
         }
 
         return root

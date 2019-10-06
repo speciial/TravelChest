@@ -11,7 +11,7 @@ import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.R
 import com.speciial.travelchest.model.Trip
 
-class TripCardFragment(private val trip: Trip, private val tripCardListener: TripCardAdapter.TripCardListener, private val cardIndex: Int) : Fragment() {
+class TripCardFragment(private val trip: Trip, private val tripCardListener: TripCardAdapter.TripCardListener) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +24,7 @@ class TripCardFragment(private val trip: Trip, private val tripCardListener: Tri
         root.findViewById<TextView>(R.id.home_card_date).text = "${trip.startDate} - ${trip.endDate}"
 
         root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
-            tripCardListener.onTripCardClick(cardIndex)
+            tripCardListener.onTripCardClick(trip.uid)
         }
 
         return root
