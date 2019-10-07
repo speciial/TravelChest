@@ -11,9 +11,13 @@ import com.speciial.travelchest.R
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
-class AudioRVAdapter(private val audioList: List<File>, private val fileClickListener: TripInfoFragment.FileClickListener, private val context: Context) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
+class AudioRVAdapter(
+    private val audioList: List<File>,
+    private val fileClickListener: TripInfoFragment.FileClickListener,
+    private val context: Context
+) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
 
-    class AudioRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
+    class AudioRVViewHolder(item: View) : RecyclerView.ViewHolder(item) {
         val name: TextView = item.findViewById(R.id.trip_info_audio_name)
     }
 

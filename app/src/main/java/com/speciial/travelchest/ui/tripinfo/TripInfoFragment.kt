@@ -16,22 +16,6 @@ import com.speciial.travelchest.model.File
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-/*
-
-private lateinit var recyclerView: RecyclerView
-private lateinit var viewAdapter: RecyclerView.Adapter<*>
-private lateinit var viewManager: RecyclerView.LayoutManager
-
-viewManager = GridLayoutManager(context!!, 3)
-viewAdapter = ImageRVAdapter(imageList, context!!)
-
-recyclerView = root.findViewById(R.id.image_rv)
-recyclerView.apply {
-setHasFixedSize(true)
-adapter = viewAdapter
-layoutManager = viewManager
-}
- */
 
 class TripInfoFragment : Fragment() {
 
