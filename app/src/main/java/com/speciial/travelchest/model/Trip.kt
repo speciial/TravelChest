@@ -13,7 +13,7 @@ data class Trip(
     val tripCiy:String,
     @Embedded
     val location:Location,
-    val pathThumbnail:String,
+    var pathThumbnail:String,
     val startDate:String,
     val endDate:String,
     val fileList:ArrayList<File> = ArrayList()
