@@ -8,8 +8,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.speciial.travelchest.R
+import com.speciial.travelchest.model.File
 
-class AudioRVAdapter(private val audioList: ArrayList<String>, private val context: Context) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
+class AudioRVAdapter(private val audioList: List<File>, private val context: Context) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
 
     class AudioRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val name: TextView = item.findViewById(R.id.trip_info_audio_name)
@@ -25,7 +26,7 @@ class AudioRVAdapter(private val audioList: ArrayList<String>, private val conte
     override fun getItemCount(): Int = audioList.size
 
     override fun onBindViewHolder(holder: AudioRVViewHolder, position: Int) {
-        holder.name.text = audioList[position]
+        holder.name.text = audioList[position].path
     }
 
 }

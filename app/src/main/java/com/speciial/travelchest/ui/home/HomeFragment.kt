@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -51,7 +50,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
+class HomeFragment : Fragment() {
 
     companion object {
         private const val REQUEST_IMAGE_CAPTURE = 1
@@ -146,12 +145,11 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         cardViewPager = root.findViewById(R.id.home_card_pager)
         doAsync {
             val tripListLiveDate = db.tripDao().getAll()
-            uiThread { homeFragment ->
+            uiThread {
                 tripListLiveDate.observe(activity as MainActivity, Observer { tripList ->
                     cardViewPager.adapter = TripCardAdapter(
                         activity!!.supportFragmentManager,
-                        tripList,
-                        (homeFragment as TripCardAdapter.TripCardListener)
+                        tripList
                     )
                     if (tripList.isNotEmpty()) {
                         cardViewPager.setCurrentItem(1, false)
@@ -165,20 +163,6 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
         cardViewTabs.setupWithViewPager(cardViewPager, true)
     }
 
-    override fun onTripCardClick(cardID: Long) {
-        when (cardID) {
-            (-1L) -> {
-                findNavController().navigate(R.id.nav_trip_add)
-                Log.d(TAG, "Create new trip")
-            }
-            else -> {
-                Log.d(TAG, "Look at trip $cardID")
-
-                val bundle = bundleOf((Pair("tripID", cardID)))
-                findNavController().navigate(R.id.nav_trip_info, bundle)
-            }
-        }
-    }
 
     private fun buttonPictureListener() {
 

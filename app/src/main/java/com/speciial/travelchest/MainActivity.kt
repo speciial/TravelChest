@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -32,9 +33,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.speciial.travelchest.PreferenceHelper.customPreference
 import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
+import com.speciial.travelchest.ui.home.TripCardAdapter
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var auth: FirebaseAuth
@@ -92,6 +94,21 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    override fun onTripCardClick(cardID: Long) {
+        when (cardID) {
+            (-1L) -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_add)
+                Log.d(TAG, "Create new trip")
+            }
+            else -> {
+                Log.d(TAG, "Look at trip $cardID")
+
+                val bundle = bundleOf((Pair("tripID", cardID)))
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_info, bundle)
+            }
+        }
+    }
+
     override fun onStart() {
         val currentUser = auth.currentUser
         updateUI(currentUser)
@@ -121,6 +138,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -140,6 +158,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
 
@@ -160,6 +179,7 @@ class MainActivity : AppCompatActivity() {
 
             }
     }
+
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)

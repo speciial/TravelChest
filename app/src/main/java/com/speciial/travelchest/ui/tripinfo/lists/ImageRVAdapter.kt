@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.MainActivity.Companion.TAG
 import com.speciial.travelchest.R
+import com.speciial.travelchest.model.File
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class ImageRVAdapter(private val imageList: ArrayList<String>, private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
+class ImageRVAdapter(private val imageList: List<File>, private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
 
     class ImageRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val image: ImageView = item.findViewById(R.id.grid_image)
@@ -34,7 +35,7 @@ class ImageRVAdapter(private val imageList: ArrayList<String>, private val conte
 
     override fun onBindViewHolder(holder: ImageRVViewHolder, position: Int) {
         doAsync {
-            val bitmap = BitmapFactory.decodeFile(imageList[position])
+            val bitmap = BitmapFactory.decodeFile(imageList[position].path)
             val scaledBitmap = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
             Log.d(TAG, "Bitmap created")
 

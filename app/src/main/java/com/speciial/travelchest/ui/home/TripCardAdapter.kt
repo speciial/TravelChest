@@ -7,15 +7,14 @@ import com.speciial.travelchest.model.Trip
 
 class TripCardAdapter(
     fm: FragmentManager,
-    private val tripList: List<Trip>,
-    private val tripCardListener: TripCardListener
+    private val tripList: List<Trip>
 ) : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return if (position == 0) {
-            TripCardAddFragment(tripCardListener)
+            TripCardAddFragment()
         } else {
-            TripCardFragment(tripList[position - 1], tripCardListener)
+            TripCardFragment.newInstance(tripList[position - 1].uid)
         }
     }
 
