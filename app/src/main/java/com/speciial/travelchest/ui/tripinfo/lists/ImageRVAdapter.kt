@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.graphics.scale
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.MainActivity.Companion.TAG
@@ -34,10 +35,11 @@ class ImageRVAdapter(private val imageList: ArrayList<String>, private val conte
     override fun onBindViewHolder(holder: ImageRVViewHolder, position: Int) {
         doAsync {
             val bitmap = BitmapFactory.decodeFile(imageList[position])
+            val scaledBitmap = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
             Log.d(TAG, "Bitmap created")
 
             uiThread {
-                holder.image.setImageBitmap(bitmap)
+                holder.image.setImageBitmap(scaledBitmap)
             }
         }
         holder.cardView.setOnClickListener { Log.d("TRAVEL_CHEST", "image clicked") }
