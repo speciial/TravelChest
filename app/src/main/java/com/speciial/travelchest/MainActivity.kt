@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -34,6 +35,7 @@ import com.speciial.travelchest.PreferenceHelper.customPreference
 import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
 import com.speciial.travelchest.model.File
+import com.speciial.travelchest.model.Type
 import com.speciial.travelchest.ui.home.TripCardAdapter
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var prefs:SharedPreferences
+    private lateinit var navController:NavController
 
     companion object {
         const val TAG = "TRAVEL_CHEST"
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
+        navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -113,6 +116,20 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
 
     override fun onFileClicked(file: File) {
         Log.d(TAG, file.toString())
+        when(file.type){
+            Type.IMAGE -> {
+                val bundle = Bundle()
+                bundle.putString("path",file.path)
+                navController.navigate(R.id.nav_image_viewer,bundle)
+            }
+            Type.VIDEO -> {
+                val bundle = Bundle()
+                bundle.putString("path",file.path)
+                navController.navigate(R.id.nav_video_viewer,bundle)
+            }
+
+        }
+
     }
 
     override fun onStart() {

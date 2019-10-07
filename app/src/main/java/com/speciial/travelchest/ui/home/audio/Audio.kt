@@ -1,15 +1,12 @@
 package com.speciial.travelchest.ui.home.audio
 
+import android.app.Activity
 import android.media.*
 import android.os.Environment
-import com.speciial.travelchest.MainActivity
 import java.io.*
 
 
-
-
-
-class Record(private val activity:MainActivity): Runnable{
+class Record(private val activity: Activity): Runnable{
     private var recRunning: Boolean = false
 
 
