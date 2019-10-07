@@ -7,6 +7,7 @@ object PreferenceHelper {
 
     val TRIP_ID = "TRIP_ID"
     val SAVE_ONLINE = "SAVE_ONLINE"
+    val DARK_THEME = "DARK_THEME"
 
     fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name,
         Context. MODE_PRIVATE)
@@ -41,6 +42,13 @@ object PreferenceHelper {
         set(value) {
             editMe {
                 it.put(SAVE_ONLINE to value)
+            }
+        }
+    var SharedPreferences. dark_theme
+        get() = getBoolean(DARK_THEME, false)
+        set(value) {
+            editMe {
+                it.put(DARK_THEME to value)
             }
         }
 

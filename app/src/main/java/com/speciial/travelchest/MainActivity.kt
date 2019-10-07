@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.speciial.travelchest.PreferenceHelper.customPreference
+import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
 
 
@@ -52,6 +53,10 @@ class MainActivity : AppCompatActivity() {
 
          prefs = customPreference(this, PREF_NAME)
 
+        when(prefs.dark_theme){
+            true -> setTheme(R.style.DarkTheme_NoActionBar)
+            false -> setTheme(R.style.AppTheme_NoActionBar)
+        }
 
         PermissionChecker.checkPermissions(this)
 

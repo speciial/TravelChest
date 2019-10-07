@@ -2,9 +2,11 @@ package com.speciial.travelchest.ui.home.audio
 
 import android.app.Activity
 import android.app.Dialog
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import com.speciial.travelchest.R
+
 
 class AudioDialog(activity: Activity, title: String, subTitle:String) : Dialog(activity) {
 
@@ -23,6 +25,10 @@ class AudioDialog(activity: Activity, title: String, subTitle:String) : Dialog(a
         saveButton = findViewById(R.id.audio_save)
         playButton = findViewById(R.id.audio_play)
         cancelButton = findViewById(R.id.audio_cancel)
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        window?.attributes = lp
 
 
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.speciial.travelchest.R
@@ -17,7 +17,7 @@ class AudioRVAdapter(private val audioList: ArrayList<String>, private val conte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioRVViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.trip_info_audio, parent, false) as FrameLayout
+            .inflate(R.layout.trip_info_audio, parent, false) as LinearLayout
 
         return AudioRVViewHolder(view)
     }

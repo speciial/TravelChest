@@ -79,19 +79,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trip_add_radiogroup_location" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/trip_add_datepicker"
+        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginTop="8dp"
-        android:drawableStart="@drawable/ic_datepicker"
+        app:icon="@drawable/ic_datepicker"
         android:text="@string/trip_date_button_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trip_add_label_date" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/trip_add_button"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:icon="@drawable/ic_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

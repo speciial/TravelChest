@@ -5,4 +5,15 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="colorBillboardBackground">#FFFFFF</color>
+
+    <color name="dark_primaryColor">#212121</color>
+    <color name="dark_primaryLightColor">#484848</color>
+    <color name="dark_primaryDarkColor">#000000</color>
+    <color name="dark_secondaryColor">#616161</color>
+    <color name="dark_secondaryLightColor">#8e8e8e</color>
+    <color name="dark_secondaryDarkColor">#373737</color>
+    <color name="dark_primaryTextColor">#ffffff</color>
+    <color name="dark_secondaryTextColor">#ffffff</color>
+
+    <color name="trans">#00000000</color>
 </resources>

@@ -10,10 +10,25 @@
         android:layout_height="wrap_content"
         android:text="File saving option" />
 
-    <CheckBox
-        android:id="@+id/preference_checkbox"
+
+    <Switch
+        android:id="@+id/switch_save_online"
+        android:switchPadding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save file online" />
+
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save file in the cloud" />
+        android:text="TextView" />
+
+    <Switch
+        android:id="@+id/switch_darktheme"
+        android:switchPadding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark theme" />
 
 </LinearLayout>

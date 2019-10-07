@@ -45,7 +45,7 @@ class TripAddFragment : Fragment() {
         val now = LocalDateTime.now()
         var date = "${now.year}-${now.monthValue}-${now.dayOfMonth}"
         getLastLocation()
-        val root = inflater.inflate(R.layout.fragment_tripadd, container, false)
+        val root = inflater.inflate(R.layout.fragment_trip_add, container, false)
         root.findViewById<RadioGroup>(R.id.trip_add_radiogroup_location)
             .setOnCheckedChangeListener { _, checkedId ->
                 val editTextCity = root.findViewById<EditText>(R.id.trip_add_city)
@@ -89,7 +89,7 @@ class TripAddFragment : Fragment() {
             }
             var idTrip: Long = 0
             doAsync {
-                idTrip = db.tripDao().insert(Trip(0, tripName, tripCity, location, date, "On trip"))
+                idTrip = db.tripDao().insert(Trip(0, tripName, tripCity, location,"", date, "On trip"))
                 prefs.tripId = idTrip
             }
             findNavController().navigate(R.id.nav_home)

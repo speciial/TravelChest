@@ -42,52 +42,53 @@
 
         <ImageButton
             android:id="@+id/home_picture"
+            android:backgroundTint="@color/trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/home_picture_content_desc"
-            android:width="50dp"
-            android:height="50dp"
+            android:padding="10dp"
             android:src="@drawable/ic_home_camera" />
 
         <ImageButton
             android:id="@+id/home_video"
+            android:backgroundTint="@color/trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_movie_content_desc"
-            android:width="50dp"
-            android:height="50dp"
+            android:padding="10dp"
             android:src="@drawable/ic_home_movie" />
 
         <ImageButton
             android:id="@+id/home_ar"
+            android:backgroundTint="@color/trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_ar_content_desc"
-            android:width="75dp"
-            android:height="75dp"
-            app:srcCompat="@drawable/ic_menu_ar" />
+            android:padding="20dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_home_ar" />
 
         <ImageButton
             android:id="@+id/home_audio"
+            android:backgroundTint="@color/trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_audio_content_desc"
-            android:width="50dp"
-            android:height="50dp"
+            android:padding="10dp"
             android:src="@drawable/ic_home_audio" />
 
         <ImageButton
             android:id="@+id/home_file"
+            android:backgroundTint="@color/trans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:width="50dp"
-            android:height="50dp"
+            android:padding="10dp"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/home_file_content_desc"
-            app:srcCompat="@drawable/ic_audio_play" />
+            app:srcCompat="@drawable/ic_home_file" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

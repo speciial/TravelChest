@@ -316,7 +316,7 @@ class HomeFragment : Fragment(), TripCardAdapter.TripCardListener {
                     type = Type.VIDEO
                 if (file.name.startsWith("audio"))
                     type = Type.AUDIO
-                saveFile(type, file.absolutePath)
+                saveFile(type, uri.toString())
 
 
             }
