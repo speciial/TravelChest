@@ -351,14 +351,14 @@ class HomeFragment : Fragment() {
     private fun saveFile(type: Int, path: String) {
         doAsync {
             val trip = db.tripDao().get(prefs.tripId)
-            trip.fileList.add(
-                com.speciial.travelchest.model.File(
-                    0,
-                    type,
-                    path,
-                    Location(lastLocation!!.latitude, lastLocation!!.longitude)
-                )
-            )
+            if(trip.getFilesByType(Type.IMAGE).isEmpty() && type == Type.IMAGE)
+                trip.pathThumbnail = path
+            trip.fileList.add(com.speciial.travelchest.model.File(
+                0,
+                type,
+                path,
+                Location(lastLocation!!.latitude, lastLocation!!.longitude)
+            ))
             db.tripDao().update(trip)
         }
     }
