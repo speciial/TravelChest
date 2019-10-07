@@ -29,6 +29,9 @@ interface FileDao {
     @Query("SELECT * FROM File")
     fun getAll(): LiveData<List<File>>
 
+    @Query("SELECT * FROM File where type = :type")
+    fun getByType(type:Int): LiveData<List<File>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(file: File): Long
 
