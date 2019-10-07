@@ -33,10 +33,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.speciial.travelchest.PreferenceHelper.customPreference
 import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
+import com.speciial.travelchest.model.File
 import com.speciial.travelchest.ui.home.TripCardAdapter
+import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
 
-class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener {
+class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, TripInfoFragment.FileClickListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var auth: FirebaseAuth
@@ -107,6 +109,10 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_info, bundle)
             }
         }
+    }
+
+    override fun onFileClicked(file: File) {
+        Log.d(TAG, file.toString())
     }
 
     override fun onStart() {

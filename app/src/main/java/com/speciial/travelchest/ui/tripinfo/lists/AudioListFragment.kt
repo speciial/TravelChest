@@ -1,6 +1,7 @@
 package com.speciial.travelchest.ui.tripinfo.lists
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,13 @@ import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.Type
+import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
 class AudioListFragment : Fragment() {
 
+    private var fileClickListener: TripInfoFragment.FileClickListener? = null
     private var tripID: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +39,7 @@ class AudioListFragment : Fragment() {
             val audioList =
                 TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
                     .getFilesByType(Type.AUDIO)
-            val rvAdapter = AudioRVAdapter(audioList, context!!)
+            val rvAdapter = AudioRVAdapter(audioList, fileClickListener!!, context!!)
             val rvManager = LinearLayoutManager(context!!)
 
             uiThread {
@@ -49,6 +52,20 @@ class AudioListFragment : Fragment() {
         }
 
         return root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is TripInfoFragment.FileClickListener) {
+            fileClickListener = context
+        } else {
+            throw RuntimeException("$context must implement TripCardListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        fileClickListener = null
     }
 
     companion object {

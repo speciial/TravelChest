@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
+import com.speciial.travelchest.model.File
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -67,6 +68,10 @@ class TripInfoFragment : Fragment() {
             }
 
         }
+    }
+
+    interface FileClickListener {
+        fun onFileClicked(file: File)
     }
 
 }

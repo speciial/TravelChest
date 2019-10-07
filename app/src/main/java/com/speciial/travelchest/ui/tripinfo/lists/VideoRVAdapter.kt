@@ -9,8 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.speciial.travelchest.R
 import com.speciial.travelchest.model.File
+import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
-class VideoRVAdapter(private val videoList: List<File>, private val context: Context) : RecyclerView.Adapter<VideoRVAdapter.VideoRVViewHolder>() {
+class VideoRVAdapter(private val videoList: List<File>, private val fileClickListener: TripInfoFragment.FileClickListener, private val context: Context) : RecyclerView.Adapter<VideoRVAdapter.VideoRVViewHolder>() {
 
     class VideoRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val name: TextView = item.findViewById(R.id.trip_info_video_name)
@@ -27,6 +28,9 @@ class VideoRVAdapter(private val videoList: List<File>, private val context: Con
 
     override fun onBindViewHolder(holder: VideoRVViewHolder, position: Int) {
         holder.name.text = videoList[position].path
+        holder.name.setOnClickListener {
+            fileClickListener.onFileClicked(videoList[position])
+        }
     }
 
 }

@@ -14,10 +14,11 @@ import com.google.android.material.card.MaterialCardView
 import com.speciial.travelchest.MainActivity.Companion.TAG
 import com.speciial.travelchest.R
 import com.speciial.travelchest.model.File
+import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class ImageRVAdapter(private val imageList: List<File>, private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
+class ImageRVAdapter(private val imageList: List<File>, private val fileClickListener: TripInfoFragment.FileClickListener, private val context: Context) : RecyclerView.Adapter<ImageRVAdapter.ImageRVViewHolder>() {
 
     class ImageRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val image: ImageView = item.findViewById(R.id.grid_image)
@@ -43,7 +44,9 @@ class ImageRVAdapter(private val imageList: List<File>, private val context: Con
                 holder.image.setImageBitmap(scaledBitmap)
             }
         }
-        holder.cardView.setOnClickListener { Log.d("TRAVEL_CHEST", "image clicked") }
+        holder.cardView.setOnClickListener {
+            fileClickListener.onFileClicked(imageList[position])
+        }
     }
 
 }
