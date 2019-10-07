@@ -6,6 +6,10 @@
     <string name="billboard_dummy_location">Helsinki</string>
     <string name="billboard_dummy_date">date</string>
 
+    <string name="list_image_btn">Images</string>
+    <string name="list_video_btn">Videos</string>
+    <string name="list_audio_btn">Audios</string>
+
     <string name="home_picture_content_desc">Button to take a picture</string>
     <string name="home_movie_content_desc">Button to take a video</string>
     <string name="home_audio_content_desc">Button to record an audio</string>
@@ -29,8 +33,6 @@
     <string name="label_fragment_preferences">Preferences</string>
     <string name="label_fragment_ar">Augmented Reality</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="trip_label_name">Name</string>
     <string name="trip_name_hint">Name of the trip</string>
     <string name="trip_use_location">Use location</string>

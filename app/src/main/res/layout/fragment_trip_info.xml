@@ -37,22 +37,50 @@
         app:layout_constraintStart_toEndOf="@+id/trip_info_subtitle"
         app:layout_constraintTop_toTopOf="@+id/trip_info_subtitle" />
 
+    <Button
+        android:id="@+id/btn_image_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_image_btn"
+        app:layout_constraintBottom_toTopOf="@+id/trip_info_pager"
+        app:layout_constraintEnd_toStartOf="@+id/btn_video_list"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_video_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_video_btn"
+        app:layout_constraintBottom_toTopOf="@+id/trip_info_pager"
+        app:layout_constraintEnd_toStartOf="@+id/btn_audio_list"
+        app:layout_constraintStart_toEndOf="@+id/btn_image_list" />
+
+    <Button
+        android:id="@+id/btn_audio_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_audio_btn"
+        app:layout_constraintBottom_toTopOf="@+id/trip_info_pager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_video_list" />
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@+id/image_rv"
+        app:layout_constraintBottom_toTopOf="@+id/trip_info_pager"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trip_info_subtitle"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_rv"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/trip_info_pager"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
