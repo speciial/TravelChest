@@ -36,7 +36,6 @@ import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.model.Type
-import com.speciial.travelchest.ui.home.TripCardAdapter
 import com.speciial.travelchest.ui.home.TripCardRVAdapter
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
