@@ -23,7 +23,7 @@ class VideoRVAdapter(private val videoList: List<File>, private val fileClickLis
 
     class VideoRVViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val image: ImageView = item.findViewById(R.id.grid_image)
-        val cardView : MaterialCardView = item.findViewById(R.id.grid_image_card)
+        val cardView : MaterialCardView = item.findViewById(R.id.grid_video_card)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoRVViewHolder {
