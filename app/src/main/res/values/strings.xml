@@ -45,4 +45,7 @@
     <string name="home_ar_content_desc">Button to open ar view</string>
     <string name="home_file_content_desc">Button to import file from the phone</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

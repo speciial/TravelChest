@@ -12,19 +12,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
@@ -59,7 +58,8 @@ class HomeFragment : Fragment() {
         private const val READ_REQUEST_CODE = 42
     }
 
-    private lateinit var cardRV: RecyclerView
+    private lateinit var cardViewPager: ViewPager
+    private lateinit var cardViewTabs: TabLayout
 
     private var mCurrentPhotoPath: String = ""
     private var mCurrentVideoPath: String = ""
@@ -133,9 +133,6 @@ class HomeFragment : Fragment() {
         root.findViewById<ImageButton>(R.id.home_file).setOnClickListener {
             buttonFileListener()
         }
-        root.findViewById<Button>(R.id.home_create_trip).setOnClickListener {
-            findNavController().navigate(R.id.nav_trip_add)
-        }
 
         setupTripCards(root)
 
@@ -144,22 +141,25 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupTripCards(root: View) {
-        val rvManager = LinearLayoutManager(context!!)
-
-        cardRV = root.findViewById(R.id.home_card_rv)
+        cardViewPager = root.findViewById(R.id.home_card_pager)
         doAsync {
             val tripListLiveDate = db.tripDao().getAll()
             uiThread {
                 tripListLiveDate.observe(activity as MainActivity, Observer { tripList ->
-                    cardRV.setHasFixedSize(true)
-                    cardRV.adapter = TripCardRVAdapter(tripList, activity as TripCardRVAdapter.CardClickListener)
-
-                    if(cardRV.layoutManager == null) {
-                        cardRV.layoutManager = rvManager
+                    cardViewPager.adapter = TripCardAdapter(
+                        it.childFragmentManager,
+                        tripList
+                    )
+                    if (tripList.isNotEmpty()) {
+                        cardViewPager.setCurrentItem(1, false)
                     }
                 })
             }
         }
+
+        // Setting up the dots at the bottom of the view pager
+        cardViewTabs = root.findViewById(R.id.home_card_pager_tabs)
+        cardViewTabs.setupWithViewPager(cardViewPager, true)
     }
 
     private fun buttonPictureListener() {

@@ -36,11 +36,11 @@ import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.model.Type
-import com.speciial.travelchest.ui.home.TripCardRVAdapter
+import com.speciial.travelchest.ui.home.TripCardAdapter
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
 
-class MainActivity : AppCompatActivity(), TripCardRVAdapter.CardClickListener, TripInfoFragment.FileClickListener {
+class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, TripInfoFragment.FileClickListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var auth: FirebaseAuth
@@ -99,9 +99,19 @@ class MainActivity : AppCompatActivity(), TripCardRVAdapter.CardClickListener, T
         navView.setupWithNavController(navController)
     }
 
-    override fun onCardClick(tripID: Long) {
-        val bundle = bundleOf((Pair("tripID", tripID)))
-        findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_info, bundle)
+    override fun onTripCardClick(tripID: Long) {
+        when (tripID) {
+            (-1L) -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_add)
+                Log.d(TAG, "Create new trip")
+            }
+            else -> {
+                Log.d(TAG, "Look at trip $tripID")
+
+                val bundle = bundleOf((Pair("tripID", tripID)))
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_info, bundle)
+            }
+        }
     }
 
     override fun onFileClicked(file: File) {
