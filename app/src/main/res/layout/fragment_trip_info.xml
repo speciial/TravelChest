@@ -68,7 +68,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorAccent"
+        android:background="@color/secondaryColor"
         app:layout_constraintBottom_toTopOf="@+id/trip_info_pager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

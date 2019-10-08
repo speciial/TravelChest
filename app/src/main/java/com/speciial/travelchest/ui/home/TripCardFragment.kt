@@ -45,7 +45,6 @@ class TripCardFragment : Fragment() {
                     bitmap =  FileHelper.getBitmapFromPath(context!!,trip.pathThumbnail)
                 } catch (e:Exception){}
 
-                //val bitmap = BitmapFactory.decodeFile(trip.pathThumbnail)
                 if (bitmap != null) {
                     val bitmapScaled = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
                     root.findViewById<ImageView>(R.id.home_card_thumbnail).setImageBitmap(bitmapScaled)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorBillboardBackground"
+    android:background="@color/white"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -10,7 +10,7 @@
         android:layout_height="190dp">
 
         <ImageView
-            android:id="@+id/iv_thumbnail"
+            android:id="@+id/ar_card_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
@@ -30,7 +30,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail" />
+            app:layout_constraintTop_toBottomOf="@+id/ar_card_thumbnail" />
 
         <TextView
             android:id="@+id/ar_card_subtitle"
@@ -57,12 +57,13 @@
             app:layout_constraintTop_toBottomOf="@+id/ar_card_title" />
 
         <ImageButton
+            android:id="@+id/ar_card_show_trip"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_share_black_24dp"
+            android:src="@drawable/ic_chevron_right"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

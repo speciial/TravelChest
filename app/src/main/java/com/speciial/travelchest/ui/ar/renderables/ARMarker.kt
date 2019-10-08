@@ -39,12 +39,18 @@ class ARMarker(
                 placementNode.setOnTapListener { _, _ ->
                     if (eventListener != null) {
                         Log.d(TAG, "Marker Clicked")
-                        eventListener!!.onMarkerClick(0, placementNode)
+                        eventListener!!.onMarkerClick(this)
                     }
                     toggleBillboard()
                 }
 
-                billboard = ARBillboard(context, transformationSystem, placementNode, trip)
+                billboard = ARBillboard(
+                    context,
+                    transformationSystem,
+                    placementNode,
+                    trip,
+                    context as ARBillboard.BillboardEventListener
+                )
             }
     }
 
@@ -65,6 +71,9 @@ class ARMarker(
     }
 
     interface MarkerEventListener {
-        fun onMarkerClick(markerID: Int, node: Node)
+
+        // Toggle the billboard visibility
+        fun onMarkerClick(marker: ARMarker)
+
     }
 }

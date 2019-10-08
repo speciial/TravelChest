@@ -36,11 +36,12 @@ import com.speciial.travelchest.PreferenceHelper.dark_theme
 import com.speciial.travelchest.PreferenceHelper.save_online
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.model.Type
+import com.speciial.travelchest.ui.ar.renderables.ARBillboard
 import com.speciial.travelchest.ui.home.TripCardAdapter
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
 
-class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, TripInfoFragment.FileClickListener {
+class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, TripInfoFragment.FileClickListener, ARBillboard.BillboardEventListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var auth: FirebaseAuth
@@ -97,6 +98,11 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onTripInfoButtonClick(tripID: Long) {
+        val bundle = bundleOf((Pair("tripID", tripID)))
+        findNavController(R.id.nav_host_fragment).navigate(R.id.nav_trip_info, bundle)
     }
 
     override fun onTripCardClick(tripID: Long) {

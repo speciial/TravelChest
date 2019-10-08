@@ -1,11 +1,13 @@
 package com.speciial.travelchest.ui.ar.renderables
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.scale
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -13,6 +15,7 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.rendering.ViewSizer
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.speciial.travelchest.FileHelper
 import com.speciial.travelchest.R
 import com.speciial.travelchest.model.Trip
 
@@ -20,12 +23,13 @@ class ARBillboard(
     private val context: Context,
     transformationSystem: TransformationSystem,
     private val anchorNode: Node,
-    private val trip: Trip
+    private val trip: Trip,
+    private val billboardEventListener: BillboardEventListener
 ) {
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
 
-    private var isVisible: Boolean = true
+    private var isVisible: Boolean = false
 
     private lateinit var renderable: ViewRenderable
 
@@ -56,13 +60,24 @@ class ARBillboard(
     }
 
     private fun fillView(view: View) {
-        val input = context.assets.open("images/wallpaper.jpg")
-        view.findViewById<ImageView>(R.id.iv_thumbnail)
-            .setImageBitmap(BitmapFactory.decodeStream(input))
+        var bitmap: Bitmap? = null
+        try {
+            bitmap = FileHelper.getBitmapFromPath(context, trip.pathThumbnail)
+        } catch (e: Exception) {
+        }
+
+        if (bitmap != null) {
+            val bitmapScaled = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
+            view.findViewById<ImageView>(R.id.ar_card_thumbnail).setImageBitmap(bitmapScaled)
+        }
 
         view.findViewById<TextView>(R.id.ar_card_title).text = trip.name
         view.findViewById<TextView>(R.id.ar_card_subtitle).text = trip.tripCiy
         view.findViewById<TextView>(R.id.ar_card_date).text = "${trip.startDate} - ${trip.endDate}"
+
+        view.findViewById<ImageButton>(R.id.ar_card_show_trip).setOnClickListener {
+            billboardEventListener.onTripInfoButtonClick(trip.uid)
+        }
     }
 
     fun adjustOrientation(camPos: Vector3) {
@@ -83,6 +98,11 @@ class ARBillboard(
             placementNode.renderable = renderable
             isVisible = true
         }
+    }
+
+    interface BillboardEventListener {
+        // Go to trip info view
+        fun onTripInfoButtonClick(tripID: Long)
     }
 
 }

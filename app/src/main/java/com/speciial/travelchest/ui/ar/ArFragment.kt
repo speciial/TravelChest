@@ -7,11 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.google.ar.core.Config
-import com.google.ar.core.Session
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.ArFragment
 import com.speciial.travelchest.MainActivity
@@ -27,7 +23,6 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
     private lateinit var arFragment: ArFragment
 
     private var earthAnchorNode: AnchorNode? = null
-
     private var globe: ARGlobe? = null
 
     private fun placeTripMarker() {
@@ -35,8 +30,6 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         tripList.observe(activity as MainActivity, Observer {
             for (trip in it) {
                 val position = convertLocationToXYZ(trip.location.latitude, trip.location.longitude)
-
-                Log.d(TAG, trip.toString())
 
                 val marker =
                     ARMarker(
@@ -71,25 +64,8 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         return result
     }
 
-    override fun onMarkerClick(markerID: Int, node: Node) {
-        Log.d(TAG, "Marker $markerID has been clicked")
-    }
-
-    private fun onUpdate(frameTime: FrameTime) {
-        // TODO(@speciial): Why is it so stupidly hard to persist a scene
-        //                  through a orientation change event??
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        arFragment.arSceneView.session!!.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        arFragment.arSceneView.session!!.pause()
+    override fun onMarkerClick(marker: ARMarker) {
+        marker.toggleBillboard()
     }
 
     override fun onCreateView(
@@ -100,13 +76,6 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
         val root = inflater.inflate(R.layout.fragment_ar, container, false)
 
         arFragment = childFragmentManager.findFragmentById(R.id.sceneform_fragment) as ArFragment
-
-        val session = Session(context)
-        val config = Config(session)
-        config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
-        session.configure(config)
-
-        arFragment.arSceneView.setupSession(session)
 
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
             earthAnchorNode = AnchorNode(hitResult.createAnchor())
@@ -122,9 +91,6 @@ class ArFragment : Fragment(), ARMarker.MarkerEventListener {
                 )
 
             placeTripMarker()
-        }
-        arFragment.arSceneView.scene.addOnUpdateListener {
-            onUpdate(it)
         }
 
         return root
