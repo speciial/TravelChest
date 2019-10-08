@@ -11,14 +11,18 @@ import com.speciial.travelchest.ui.tripinfo.lists.VideoListFragment
 
 class ListPagerAdapter(
     fm: FragmentManager,
-    private val tripID: Long
+    tripID: Long
 ) : FragmentStatePagerAdapter(fm) {
+
+    private val imageListFragment = ImageListFragment.newInstance(tripID)
+    private val videoListFragment = VideoListFragment.newInstance(tripID)
+    private val audioListFragment = AudioListFragment.newInstance(tripID)
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> ImageListFragment.newInstance(tripID)
-            1 -> VideoListFragment.newInstance(tripID)
-            2 -> AudioListFragment.newInstance(tripID)
+            0 -> imageListFragment
+            1 -> videoListFragment
+            2 -> audioListFragment
             else -> {
                 Log.d(TAG, "Pager out of bounds")
                 Fragment()

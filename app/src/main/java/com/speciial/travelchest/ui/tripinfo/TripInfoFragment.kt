@@ -44,7 +44,7 @@ class TripInfoFragment : Fragment() {
                 root.findViewById<TextView>(R.id.trip_info_date).text = "${trip.startDate} - ${trip.endDate}"
 
                 listPager = root.findViewById(R.id.trip_info_pager)
-                listPager.adapter = ListPagerAdapter(activity!!.supportFragmentManager, tripID)
+                listPager.adapter = ListPagerAdapter(it.childFragmentManager, tripID)
 
                 root.findViewById<Button>(R.id.btn_image_list).setOnClickListener { listPager.setCurrentItem(0, true) }
                 root.findViewById<Button>(R.id.btn_video_list).setOnClickListener { listPager.setCurrentItem(1, true) }
