@@ -203,6 +203,9 @@ class HomeFragment : Fragment() {
             "Record an audio",
             "Press the start button to record, Press stop when you have finished"
         )
+        var recFile:File ?= null
+        val recFileName= "temprecord.raw"
+        val storageDir= activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
 
         dialog.startButton!!.setOnClickListener {
             record = Record(activity as MainActivity)
@@ -217,15 +220,8 @@ class HomeFragment : Fragment() {
 
         dialog.playButton!!.setOnClickListener {
             try {
-                soundFile = createFile(Type.AUDIO)
-                val audioURI: Uri = FileProvider.getUriForFile(
-                    activity as MainActivity,
-                    "com.speciial.travelchest.ui.home",
-                    soundFile
-                )
-                mCurrentSoundPath = audioURI
-
-                val inputStream = FileInputStream(soundFile)
+                recFile = File(storageDir.toString() + "/" + recFileName)
+                val inputStream = FileInputStream(recFile)
                 val myRunnable = PlayAudio(inputStream)
                 mThreadPlay = Thread(myRunnable)
                 mThreadPlay!!.start()
@@ -240,13 +236,23 @@ class HomeFragment : Fragment() {
         dialog.saveButton!!.setOnClickListener {
 
             try {
-                if (soundFile == null)
+                recFile = File(storageDir.toString() + "/" + recFileName)
+                if (recFile == null)
                     Toast.makeText(
                         activity as MainActivity,
                         "No audio saved",
                         Toast.LENGTH_LONG
                     ).show()
                 else {
+                    soundFile = createFile(Type.AUDIO)
+                    val audioURI: Uri = FileProvider.getUriForFile(
+                        activity as MainActivity,
+                        "com.speciial.travelchest.ui.home",
+                        soundFile
+                    )
+                    mCurrentSoundPath = audioURI
+                    recFile?.copyTo(soundFile)
+                    recFile?.delete()
                     dialog.dismiss()
                     save(Type.AUDIO, soundFile, mCurrentSoundPath!!)
                 }

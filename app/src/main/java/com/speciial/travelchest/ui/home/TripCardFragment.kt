@@ -2,9 +2,7 @@ package com.speciial.travelchest.ui.home
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +11,7 @@ import android.widget.TextView
 import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.speciial.travelchest.FileHelper
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
@@ -43,7 +42,7 @@ class TripCardFragment : Fragment() {
             uiThread {
                 var bitmap: Bitmap?= null
                 try{
-                    bitmap =  MediaStore.Images.Media.getBitmap(activity?.contentResolver, Uri.parse(trip.pathThumbnail))
+                    bitmap =  FileHelper.getBitmapFromPath(context!!,trip.pathThumbnail)
                 } catch (e:Exception){}
 
                 //val bitmap = BitmapFactory.decodeFile(trip.pathThumbnail)

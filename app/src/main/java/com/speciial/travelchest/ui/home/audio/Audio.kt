@@ -11,7 +11,7 @@ class Record(private val activity: Activity): Runnable{
 
 
     fun stopRecord(){
-
+        recRunning = false
     }
     override fun run() {
         recRunning = true

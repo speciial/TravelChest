@@ -2,4 +2,5 @@
 <paths>
     <external-files-path name="my_images" path="Pictures" />
     <external-files-path name="my_videos" path="Movies" />
+    <external-files-path name="my_musics" path="Music" />
 </paths>
