@@ -19,18 +19,18 @@
     <fragment
         android:id="@+id/nav_trip_info"
         android:name="com.speciial.travelchest.ui.tripinfo.TripInfoFragment"
-        android:label="fragment_trip_info"
+        android:label="Trip Information"
         tools:layout="@layout/fragment_trip_info" />
     <fragment
         android:id="@+id/nav_trip_add"
         android:name="com.speciial.travelchest.ui.tripinfo.TripAddFragment"
-        android:label="TripAddFragment" />
+        android:label="Add a trip" />
     <fragment
         android:id="@+id/nav_image_viewer"
-        android:name="com.speciial.travelchest.ui.home.viewer.ImageViewerFragment"
+        android:name="com.speciial.travelchest.ui.tripinfo.viewer.ImageViewerFragment"
         android:label="ImageViewerFragment" />
     <fragment
         android:id="@+id/nav_video_viewer"
-        android:name="com.speciial.travelchest.ui.home.viewer.VideoViewerFragment"
+        android:name="com.speciial.travelchest.ui.tripinfo.viewer.VideoViewerFragment"
         android:label="VideoViewerFragment" />
 </navigation>

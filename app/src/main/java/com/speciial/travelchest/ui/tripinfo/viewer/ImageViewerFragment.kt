@@ -1,4 +1,4 @@
-package com.speciial.travelchest.ui.home.viewer
+package com.speciial.travelchest.ui.tripinfo.viewer
 
 import android.os.Bundle
 import android.view.LayoutInflater

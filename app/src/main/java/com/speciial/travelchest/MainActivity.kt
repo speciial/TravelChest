@@ -2,6 +2,7 @@ package com.speciial.travelchest
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -37,6 +38,7 @@ import com.speciial.travelchest.PreferenceHelper.save_online
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.model.Type
 import com.speciial.travelchest.ui.home.TripCardAdapter
+import com.speciial.travelchest.ui.home.audio.PlayAudio
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
 
 
@@ -126,6 +128,16 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
                 val bundle = Bundle()
                 bundle.putString("path",file.path)
                 navController.navigate(R.id.nav_video_viewer,bundle)
+            }
+            Type.AUDIO -> {
+                try{
+                    val inputStream = contentResolver.openInputStream(Uri.parse((file.path)))
+                    val myRunnable = PlayAudio(inputStream!!)
+                    val mThreadPlay = Thread(myRunnable)
+                    mThreadPlay.start()
+
+                }catch (e:Exception){}
+
             }
 
         }

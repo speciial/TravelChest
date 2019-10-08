@@ -18,7 +18,7 @@ class AudioRVAdapter(
 ) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
 
     class AudioRVViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val name: TextView = item.findViewById(R.id.trip_info_audio_name)
+        val button: TextView = item.findViewById(R.id.button_play_audio)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioRVViewHolder {
@@ -31,8 +31,8 @@ class AudioRVAdapter(
     override fun getItemCount(): Int = audioList.size
 
     override fun onBindViewHolder(holder: AudioRVViewHolder, position: Int) {
-        holder.name.text = audioList[position].path
-        holder.name.setOnClickListener {
+        holder.button.text = "Play audio $position"
+        holder.button.setOnClickListener {
             fileClickListener.onFileClicked(audioList[position])
         }
     }
