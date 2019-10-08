@@ -61,9 +61,9 @@ class HomeFragment : Fragment() {
     private lateinit var cardViewPager: ViewPager
     private lateinit var cardViewTabs: TabLayout
 
-    private var mCurrentPhotoPath: String = ""
-    private var mCurrentVideoPath: String = ""
-    private var mCurrentSoundPath: String = ""
+    private var mCurrentPhotoPath: Uri ?= null
+    private var mCurrentVideoPath: Uri ?= null
+    private var mCurrentSoundPath: Uri ?= null
 
     private lateinit var imageFile: File
     private lateinit var movieFile: File
@@ -166,12 +166,13 @@ class HomeFragment : Fragment() {
 
         getLastLocation()
         imageFile = createFile(Type.IMAGE)
-        mCurrentPhotoPath = imageFile.absolutePath
+
         val photoURI: Uri = FileProvider.getUriForFile(
             activity as MainActivity,
             "com.speciial.travelchest.ui.home",
             imageFile
         )
+        mCurrentPhotoPath = photoURI
         val myIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (myIntent.resolveActivity(activity!!.packageManager) != null) {
             myIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -182,12 +183,13 @@ class HomeFragment : Fragment() {
     private fun buttonVideoListener() {
         getLastLocation()
         movieFile = createFile(Type.VIDEO)
-        mCurrentVideoPath = movieFile.absolutePath
+
         val videoURI: Uri = FileProvider.getUriForFile(
             activity as MainActivity,
             "com.speciial.travelchest.ui.home",
             movieFile
         )
+        mCurrentVideoPath = videoURI
         val myIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         if (myIntent.resolveActivity(activity!!.packageManager) != null) {
             myIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI)
@@ -216,7 +218,12 @@ class HomeFragment : Fragment() {
         dialog.playButton!!.setOnClickListener {
             try {
                 soundFile = createFile(Type.AUDIO)
-                mCurrentSoundPath = soundFile.absolutePath
+                val audioURI: Uri = FileProvider.getUriForFile(
+                    activity as MainActivity,
+                    "com.speciial.travelchest.ui.home",
+                    soundFile
+                )
+                mCurrentSoundPath = audioURI
 
                 val inputStream = FileInputStream(soundFile)
                 val myRunnable = PlayAudio(inputStream)
@@ -241,7 +248,7 @@ class HomeFragment : Fragment() {
                     ).show()
                 else {
                     dialog.dismiss()
-                    save(Type.AUDIO, soundFile, mCurrentSoundPath)
+                    save(Type.AUDIO, soundFile, mCurrentSoundPath!!)
                 }
             } catch (e: IOException) {
                 Toast.makeText(
@@ -277,10 +284,10 @@ class HomeFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, recIntent: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            save(Type.IMAGE, imageFile, mCurrentPhotoPath)
+            save(Type.IMAGE, imageFile, mCurrentPhotoPath!!)
         }
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == Activity.RESULT_OK) {
-            save(Type.VIDEO, movieFile, mCurrentVideoPath)
+            save(Type.VIDEO, movieFile, mCurrentVideoPath!!)
 
         }
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -298,7 +305,7 @@ class HomeFragment : Fragment() {
                     type = Type.VIDEO
                 if (file.name.startsWith("audio"))
                     type = Type.AUDIO
-                saveFile(type, uri.toString())
+                saveFile(type, uri)
 
 
             }
@@ -326,7 +333,7 @@ class HomeFragment : Fragment() {
             }
             Type.VIDEO -> {
                 imgPath = activity?.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-                ext = ".mp4"
+                ext = ".webm"
             }
             Type.AUDIO -> {
                 imgPath = activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
@@ -337,7 +344,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun save(type: Int, file: File, path: String) {
+    private fun save(type: Int, file: File, path: Uri) {
 
         if (currentUser != null && prefs.save_online)
             upload(type, file)
@@ -346,15 +353,15 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun saveFile(type: Int, path: String) {
+    private fun saveFile(type: Int, path: Uri) {
         doAsync {
             val trip = db.tripDao().get(prefs.tripId)
             if(trip.getFilesByType(Type.IMAGE).isEmpty() && type == Type.IMAGE)
-                trip.pathThumbnail = path
+                trip.pathThumbnail = path.toString()
             trip.fileList.add(com.speciial.travelchest.model.File(
                 0,
                 type,
-                path,
+                path.toString(),
                 Location(lastLocation!!.latitude, lastLocation!!.longitude)
             ))
             db.tripDao().update(trip)
@@ -364,27 +371,26 @@ class HomeFragment : Fragment() {
 
     private fun upload(type: Int, fileToDelete: File) {
         var typeString = "null"
-        var path = "null"
+        var path:Uri ?= null
 
         when (type) {
             Type.IMAGE -> {
                 typeString = Type.PICTURE_STRING
-                path = mCurrentPhotoPath
+                path = mCurrentPhotoPath!!
             }
             Type.VIDEO -> {
                 typeString = Type.VIDEO_STRING
-                path = mCurrentVideoPath
+                path = mCurrentVideoPath!!
             }
             Type.AUDIO -> {
                 typeString = Type.SOUND_STRING
-                path = mCurrentSoundPath
+                path = mCurrentSoundPath!!
             }
         }
         val storageRef = storage.reference
-        val file = Uri.fromFile(File(path))
         val pictureRef =
-            storageRef.child(currentUser!!.uid + "/${typeString}s/${file.lastPathSegment}")
-        val uploadTask = pictureRef.putFile(file)
+            storageRef.child(currentUser!!.uid + "/${typeString}s/${path!!.lastPathSegment}")
+        val uploadTask = pictureRef.putFile(path)
         val progressDoalog = createProgressDialog(typeString)
         uploadTask.addOnSuccessListener {
             Log.e(TAG, "$typeString success upload")
@@ -407,7 +413,7 @@ class HomeFragment : Fragment() {
                     val downloadUri = task.result
                     progressDoalog.dismiss()
                     fileToDelete.delete()
-                    saveFile(type, downloadUri.toString())
+                    saveFile(type, downloadUri!!)
                 }
             }
     }

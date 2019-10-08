@@ -11,6 +11,7 @@ data class File (
     @ColumnInfo(name = "file_id")
     val uid:Long,
     val type:Int,
+    @Embedded
     val path:String,
     @Embedded
     val location:Location

@@ -1,7 +1,8 @@
 package com.speciial.travelchest.ui.tripinfo.lists
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +37,8 @@ class ImageRVAdapter(private val imageList: List<File>, private val fileClickLis
 
     override fun onBindViewHolder(holder: ImageRVViewHolder, position: Int) {
         doAsync {
-            val bitmap = BitmapFactory.decodeFile(imageList[position].path)
+            //val bitmap = BitmapFactory.decodeFile(imageList[position].path)
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(imageList[position].path))
             val scaledBitmap = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
             Log.d(TAG, "Bitmap created")
 

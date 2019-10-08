@@ -1,8 +1,10 @@
 package com.speciial.travelchest.ui.home
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +41,12 @@ class TripCardFragment : Fragment() {
             val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
 
             uiThread {
-                val bitmap = BitmapFactory.decodeFile(trip.pathThumbnail)
+                var bitmap: Bitmap?= null
+                try{
+                    bitmap =  MediaStore.Images.Media.getBitmap(activity?.contentResolver, Uri.parse(trip.pathThumbnail))
+                } catch (e:Exception){}
+
+                //val bitmap = BitmapFactory.decodeFile(trip.pathThumbnail)
                 if (bitmap != null) {
                     val bitmapScaled = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
                     root.findViewById<ImageView>(R.id.home_card_thumbnail).setImageBitmap(bitmapScaled)

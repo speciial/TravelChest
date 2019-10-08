@@ -23,7 +23,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.tripinfo.TripInfoActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +37,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.speciial.travelchest"
+            android:authorities="com.speciial.travelchest.ui.home"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

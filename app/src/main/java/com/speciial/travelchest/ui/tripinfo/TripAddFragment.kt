@@ -89,7 +89,7 @@ class TripAddFragment : Fragment() {
             }
             var idTrip: Long = 0
             doAsync {
-                idTrip = db.tripDao().insert(Trip(0, tripName, tripCity, location,"", date, "On trip"))
+                idTrip = db.tripDao().insert(Trip(0, tripName, tripCity, location, "", date, "On trip"))
                 prefs.tripId = idTrip
             }
             findNavController().navigate(R.id.nav_home)

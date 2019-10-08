@@ -1,7 +1,8 @@
 package com.speciial.travelchest.ui.home.viewer
 
-import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,8 @@ class ImageViewerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.viewer_image, container, false)
-        val imageBitmap= BitmapFactory.decodeFile(arguments?.getString("path"))
-        root.findViewById<ImageView>(R.id.image_viewer).setImageBitmap(imageBitmap)
+        val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, Uri.parse(arguments?.getString("path")))
+        root.findViewById<ImageView>(R.id.image_viewer).setImageBitmap(bitmap)
         return root
     }
 
