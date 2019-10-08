@@ -17,22 +17,23 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
 
-class TripInfoFragment : Fragment() {
+class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
 
     private lateinit var listPager: ViewPager
+    private lateinit var root: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_trip_info, container, false)
+        root = inflater.inflate(R.layout.fragment_trip_info, container, false)
 
-        fillView(root)
+        fillView()
 
         return root
     }
 
-    private fun fillView(root: View){
+    private fun fillView() {
         val tripID = arguments!!.getLong("tripID")
 
         doAsync {
@@ -41,17 +42,58 @@ class TripInfoFragment : Fragment() {
             uiThread {
                 root.findViewById<TextView>(R.id.trip_info_title).text = trip.name
                 root.findViewById<TextView>(R.id.trip_info_subtitle).text = trip.tripCiy
-                root.findViewById<TextView>(R.id.trip_info_date).text = "${trip.startDate} - ${trip.endDate}"
+                root.findViewById<TextView>(R.id.trip_info_date).text =
+                    "${trip.startDate} - ${trip.endDate}"
 
                 listPager = root.findViewById(R.id.trip_info_pager)
                 listPager.adapter = ListPagerAdapter(it.childFragmentManager, tripID)
+                listPager.addOnPageChangeListener(it)
 
-                root.findViewById<Button>(R.id.btn_image_list).setOnClickListener { listPager.setCurrentItem(0, true) }
-                root.findViewById<Button>(R.id.btn_video_list).setOnClickListener { listPager.setCurrentItem(1, true) }
-                root.findViewById<Button>(R.id.btn_audio_list).setOnClickListener { listPager.setCurrentItem(2, true) }
+                root.findViewById<Button>(R.id.btn_image_list)
+                    .setOnClickListener { listPager.setCurrentItem(0, true) }
+                root.findViewById<Button>(R.id.btn_video_list)
+                    .setOnClickListener { listPager.setCurrentItem(1, true) }
+                root.findViewById<Button>(R.id.btn_audio_list)
+                    .setOnClickListener { listPager.setCurrentItem(2, true) }
+                highlightButton(0)
             }
 
         }
+    }
+
+    private fun highlightButton(index: Int) {
+        root.findViewById<Button>(R.id.btn_image_list)
+            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+        root.findViewById<Button>(R.id.btn_video_list)
+            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+        root.findViewById<Button>(R.id.btn_audio_list)
+            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+
+        when (index) {
+            0 -> root.findViewById<Button>(R.id.btn_image_list).setBackgroundColor(
+                context!!.getColor(
+                    R.color.secondaryDarkColor
+                )
+            )
+            1 -> root.findViewById<Button>(R.id.btn_video_list).setBackgroundColor(
+                context!!.getColor(
+                    R.color.secondaryDarkColor
+                )
+            )
+            2 -> root.findViewById<Button>(R.id.btn_audio_list).setBackgroundColor(
+                context!!.getColor(
+                    R.color.secondaryDarkColor
+                )
+            )
+        }
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {}
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+    override fun onPageSelected(position: Int) {
+        highlightButton(position)
     }
 
     interface FileClickListener {

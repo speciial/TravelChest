@@ -62,7 +62,7 @@ class TripAddFragment : Fragment() {
             val dp = DatePickerDialog(activity as MainActivity)
             dp.updateDate(now.year, now.monthValue, now.dayOfMonth)
 
-            dp.setOnDateSetListener { view, year, month, dayOfMonth ->
+            dp.setOnDateSetListener { _, year, month, dayOfMonth ->
                 date = "$year-$month-$dayOfMonth"
                 Log.d("DBG", date)
             }

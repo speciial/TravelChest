@@ -21,6 +21,6 @@ class TripCardAdapter(
     override fun getCount(): Int = (tripList.size + 1)
 
     interface TripCardListener {
-        fun onTripCardClick(cardID: Long)
+        fun onTripCardClick(tripID: Long)
     }
 }
