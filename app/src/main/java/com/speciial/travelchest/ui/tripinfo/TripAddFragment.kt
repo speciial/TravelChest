@@ -93,10 +93,10 @@ class TripAddFragment : Fragment() {
 
             } else {
                 tripCity = root.findViewById<EditText>(R.id.trip_add_city).text.toString()
-                var loca:Location ?= null
+                var loca:Location
                 try {
                     loca = getLocationFromCity(tripCity)!!
-                    location = loca!!
+                    location = loca
                 }catch (e:java.lang.Exception){
                     Toast.makeText(
                         activity as MainActivity,
@@ -108,7 +108,7 @@ class TripAddFragment : Fragment() {
 
             }
             if(okay) {
-                var idTrip: Long = 0
+                var idTrip: Long
                 doAsync {
                     idTrip = db.tripDao()
                         .insert(Trip(0, tripName, tripCity, location!!, "", date, "On trip"))
