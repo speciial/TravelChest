@@ -9,10 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -77,22 +74,48 @@ class TripAddFragment : Fragment() {
         root.findViewById<Button>(R.id.trip_add_button).setOnClickListener {
             val db = TravelChestDatabase.get(activity as MainActivity)
             val tripName = root.findViewById<EditText>(R.id.trip_add_name).text.toString()
-            val tripCity: String
-            val location: Location
+            var tripCity = ""
+            var location: Location ?= null
+            var okay = true
             if (root.findViewById<RadioButton>(R.id.trip_radio_location).isChecked) {
-                location = lastLocation!!
-                tripCity = getCityFromLocation(location)!!
-            } else {
+                getLastLocation()
+                if(lastLocation == null && root.findViewById<RadioButton>(R.id.trip_radio_location).isChecked) {
+                    Toast.makeText(
+                        activity as MainActivity,
+                        "You should have location activated to use your location",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    okay = false
+                } else{
+                    location = lastLocation!!
+                    tripCity = getCityFromLocation(location)!!
+                }
 
+            } else {
                 tripCity = root.findViewById<EditText>(R.id.trip_add_city).text.toString()
-                location = getLocationFromCity(tripCity)!!
+                var loca:Location ?= null
+                try {
+                    loca = getLocationFromCity(tripCity)!!
+                    location = loca!!
+                }catch (e:java.lang.Exception){
+                    Toast.makeText(
+                        activity as MainActivity,
+                        "Can't find a location with that city",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    okay = false
+                }
+
             }
-            var idTrip: Long = 0
-            doAsync {
-                idTrip = db.tripDao().insert(Trip(0, tripName, tripCity, location, "", date, "On trip"))
-                prefs.tripId = idTrip
+            if(okay) {
+                var idTrip: Long = 0
+                doAsync {
+                    idTrip = db.tripDao()
+                        .insert(Trip(0, tripName, tripCity, location!!, "", date, "On trip"))
+                    prefs.tripId = idTrip
+                }
+                findNavController().navigate(R.id.nav_home)
             }
-            findNavController().navigate(R.id.nav_home)
         }
 
         return root
