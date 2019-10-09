@@ -56,5 +56,7 @@
     <string name="home_file_content_desc">Button to import file from the phone</string>
 
     <string name="trip_info_end_trip">End Trip</string>
+    <string name="trip_add_headline">Trip Info</string>
+    <string name="trip_add_use_location">or use location</string>
 
 </resources>

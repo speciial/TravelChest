@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="Trip Info"
+        android:text="@string/trip_add_headline"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/primaryDarkColor"
@@ -59,7 +59,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:padding="5dp"
-        android:text="or use location"
+        android:text="@string/trip_add_use_location"
+        android:textSize="18sp"
+        android:textColor="@color/secondaryDarkColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/trip_add_city" />
@@ -72,7 +74,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
-        android:text="@string/trip_label_date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trip_add_use_location" />
@@ -82,12 +83,21 @@
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:text="@string/trip_date_button_label"
         app:icon="@drawable/ic_datepicker"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trip_add_current_location" />
+
+    <TextView
+        android:id="@+id/trip_add_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/trip_add_datepicker"
         app:layout_constraintTop_toBottomOf="@+id/trip_add_current_location" />
 
     <com.google.android.material.button.MaterialButton
