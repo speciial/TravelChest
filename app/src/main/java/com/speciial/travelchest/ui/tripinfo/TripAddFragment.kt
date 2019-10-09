@@ -112,8 +112,8 @@ class TripAddFragment : Fragment() {
                 doAsync {
                     try{
                         val lastTrip = db.tripDao().get(prefs.tripId)
-                        if(lastTrip.endDate != ON_TRIP)
-                            lastTrip.endDate = "${now.year}-${now.month}-${now.dayOfMonth}"
+                        if(lastTrip.endDate == ON_TRIP)
+                            lastTrip.endDate = "${now.year}-${now.monthValue}-${now.dayOfMonth}"
                         db.tripDao().update(lastTrip)
                     }catch (e:java.lang.Exception){}
                     idTrip = db.tripDao()
