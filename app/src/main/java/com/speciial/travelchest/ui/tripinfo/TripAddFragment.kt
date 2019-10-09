@@ -9,11 +9,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textfield.TextInputEditText
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.MainActivity.Companion.PREF_NAME
 import com.speciial.travelchest.PreferenceHelper.customPreference
@@ -37,26 +42,19 @@ class TripAddFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        val root = inflater.inflate(R.layout.fragment_trip_add, container, false)
         prefs = customPreference(activity as MainActivity, PREF_NAME)
         val now = LocalDateTime.now()
         var date = "${now.year}-${now.monthValue}-${now.dayOfMonth}"
+        root.findViewById<TextView>(R.id.trip_add_date).text = date
         getLastLocation()
-        val root = inflater.inflate(R.layout.fragment_trip_add, container, false)
-        root.findViewById<RadioGroup>(R.id.trip_add_radiogroup_location)
-            .setOnCheckedChangeListener { _, checkedId ->
-                val editTextCity = root.findViewById<EditText>(R.id.trip_add_city)
-                when (checkedId) {
-                    R.id.trip_radio_location -> {
-                        editTextCity.isEnabled = false
-                        editTextCity.isFocusableInTouchMode = false
-                    }
-                    R.id.trip_radio_city -> {
-                        editTextCity.isEnabled = true
-                        editTextCity.isFocusableInTouchMode = true
-                    }
-                }
-            }
+
+
+
+        root.findViewById<SwitchMaterial>(R.id.trip_add_use_location).setOnCheckedChangeListener { buttonView, isChecked ->
+            val tv = root.findViewById<TextInputEditText>(R.id.trip_add_city)
+            tv.isEnabled = !isChecked
+        }
         root.findViewById<Button>(R.id.trip_add_datepicker).setOnClickListener {
 
             val dp = DatePickerDialog(activity as MainActivity)
@@ -65,6 +63,7 @@ class TripAddFragment : Fragment() {
             dp.setOnDateSetListener { _, year, month, dayOfMonth ->
                 date = "$year-$month-$dayOfMonth"
                 Log.d("DBG", date)
+                root.findViewById<TextView>(R.id.trip_add_date).text = date
             }
             dp.show()
 
@@ -77,9 +76,9 @@ class TripAddFragment : Fragment() {
             var tripCity = ""
             var location: Location ?= null
             var okay = true
-            if (root.findViewById<RadioButton>(R.id.trip_radio_location).isChecked) {
+            if (root.findViewById<SwitchMaterial>(R.id.trip_add_use_location).isChecked) {
                 getLastLocation()
-                if(lastLocation == null && root.findViewById<RadioButton>(R.id.trip_radio_location).isChecked) {
+                if(lastLocation == null && root.findViewById<SwitchMaterial>(R.id.trip_add_use_location).isChecked) {
                     Toast.makeText(
                         activity as MainActivity,
                         "You should have location activated to use your location",
@@ -166,6 +165,8 @@ class TripAddFragment : Fragment() {
         locationClient.lastLocation.addOnCompleteListener(activity as MainActivity) { task ->
             if (task.isSuccessful && task.result != null) {
                 lastLocation = Location(task.result!!.latitude, task.result!!.longitude)
+                if(view != null)
+                    view!!.findViewById<TextView>(R.id.trip_add_current_location).text = getCityFromLocation(Location(lastLocation!!.latitude,lastLocation!!.longitude))
             }
         }
     }

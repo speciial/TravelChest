@@ -41,18 +41,8 @@ class TripCardFragment : Fragment() {
 
         doAsync {
             val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
-            var bitmap: Bitmap? = null
-            try {
-                bitmap = FileHelper.getBitmapFromPath(context!!, trip.pathThumbnail)
-            } catch (e: Exception) {
-            }
-            uiThread {
-                if (bitmap != null) {
-                    val bitmapScaled = bitmap.scale(bitmap.width / 2, bitmap.height / 2, false)
-                    root.findViewById<ImageView>(R.id.home_card_thumbnail)
-                        .setImageBitmap(bitmapScaled)
-                }
 
+            uiThread {
                 root.findViewById<TextView>(R.id.home_card_title).text = trip.name
                 root.findViewById<TextView>(R.id.home_card_subtitle).text = trip.tripCiy
 
@@ -71,6 +61,21 @@ class TripCardFragment : Fragment() {
 
                 root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
                     tripCardListener?.onTripCardClick(trip.uid)
+                }
+            }
+        }
+        doAsync {
+            val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
+            var bitmap: Bitmap? = null
+            try {
+                bitmap = FileHelper.getBitmapFromPath(context!!, trip.pathThumbnail)
+            } catch (e: Exception) {
+            }
+            uiThread {
+                if (bitmap != null) {
+                    val bitmapScaled = bitmap.scale(bitmap.width / 2, bitmap.height / 2, false)
+                    root.findViewById<ImageView>(R.id.home_card_thumbnail)
+                        .setImageBitmap(bitmapScaled)
                 }
             }
         }

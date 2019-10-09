@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/nav_trip_add"
         android:name="com.speciial.travelchest.ui.tripinfo.TripAddFragment"
-        android:label="Add a trip" />
+        android:label="Create a new Trip" />
     <fragment
         android:id="@+id/nav_image_viewer"
         android:name="com.speciial.travelchest.ui.tripinfo.viewer.ImageViewerFragment"
