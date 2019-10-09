@@ -43,6 +43,7 @@ class ImageRVAdapter(private val imageList: List<File>, private val fileClickLis
 
             uiThread {
                 holder.image.setImageBitmap(scaledBitmap)
+                holder.image.contentDescription = "Image from ${imageList[position].date}"
             }
         }
         holder.cardView.setOnClickListener {

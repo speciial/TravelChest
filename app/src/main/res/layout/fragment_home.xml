@@ -20,6 +20,7 @@
         android:id="@+id/home_card_pager_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/trans"
         app:layout_constraintBottom_toTopOf="@+id/home_menu_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +44,7 @@
         android:id="@+id/home_menu_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primaryLightColor"
+        android:background="@color/primaryColor"
         android:gravity="center"
         android:orientation="horizontal"
         android:textAlignment="center"
@@ -64,7 +65,7 @@
             app:icon="@drawable/ic_home_camera"
             app:iconGravity="textStart"
             app:iconSize="@dimen/home_btn_icon_size"
-            app:iconTint="@color/primaryDarkColor"
+            app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_video"
             app:layout_constraintStart_toStartOf="parent" />
@@ -81,7 +82,7 @@
             app:icon="@drawable/ic_home_movie"
             app:iconGravity="textStart"
             app:iconSize="@dimen/home_btn_icon_size"
-            app:iconTint="@color/primaryDarkColor"
+            app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_ar"
             app:layout_constraintStart_toEndOf="@+id/home_picture" />
@@ -98,7 +99,7 @@
             app:icon="@drawable/ic_home_ar"
             app:iconGravity="textStart"
             app:iconSize="@dimen/home_btn_icon_size"
-            app:iconTint="@color/primaryDarkColor"
+            app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_audio"
             app:layout_constraintStart_toEndOf="@id/home_video" />
@@ -115,7 +116,7 @@
             app:icon="@drawable/ic_home_audio"
             app:iconGravity="textStart"
             app:iconSize="@dimen/home_btn_icon_size"
-            app:iconTint="@color/primaryDarkColor"
+            app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/home_file"
             app:layout_constraintStart_toEndOf="@id/home_ar" />
@@ -132,7 +133,7 @@
             app:icon="@drawable/ic_home_file"
             app:iconGravity="textStart"
             app:iconSize="@dimen/home_btn_icon_size"
-            app:iconTint="@color/primaryDarkColor"
+            app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/home_audio" />

@@ -43,6 +43,7 @@ class VideoRVAdapter(private val videoList: List<File>, private val fileClickLis
 
             uiThread {
                 holder.image.setImageBitmap(scaledBitmap)
+                holder.image.contentDescription = "Image from ${videoList[position].date}"
             }
         }
         holder.cardView.setOnClickListener {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.speciial.travelchest.R
 import com.speciial.travelchest.model.File
 import com.speciial.travelchest.ui.tripinfo.TripInfoFragment
@@ -18,7 +19,8 @@ class AudioRVAdapter(
 ) : RecyclerView.Adapter<AudioRVAdapter.AudioRVViewHolder>() {
 
     class AudioRVViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val button: TextView = item.findViewById(R.id.button_play_audio)
+        val button: MaterialButton = item.findViewById(R.id.button_play_audio)
+        val title: TextView = item.findViewById(R.id.audio_name)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioRVViewHolder {
@@ -31,7 +33,7 @@ class AudioRVAdapter(
     override fun getItemCount(): Int = audioList.size
 
     override fun onBindViewHolder(holder: AudioRVViewHolder, position: Int) {
-        holder.button.text = "Play audio $position"
+        holder.title.text = audioList[position].date
         holder.button.setOnClickListener {
             fileClickListener.onFileClicked(audioList[position])
         }
