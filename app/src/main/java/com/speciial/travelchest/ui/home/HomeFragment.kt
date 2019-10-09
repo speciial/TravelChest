@@ -374,7 +374,8 @@ class HomeFragment : Fragment() {
                     0,
                     type,
                     path.toString(),
-                    location
+                    location,
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd-HH:mm:s"))
                 )
             )
             db.tripDao().update(trip)

@@ -14,7 +14,8 @@ data class File (
     @Embedded
     val path:String,
     @Embedded
-    val location:Location
+    val location:Location,
+    val date:String
 ){
     override fun toString(): String {
         return "Type : ${this.type} . Path : ${this.path}"
