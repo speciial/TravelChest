@@ -6,78 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <TextView
-        android:id="@+id/trip_add_label_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/trip_label_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <EditText
-        android:id="@+id/trip_add_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/trip_name_hint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trip_add_label_name"
-        android:autofillHints="@string/trip_name_hint"
-        android:inputType="text" />
-
-    <RadioGroup
-        android:id="@+id/trip_add_radiogroup_location"
+        android:id="@+id/trip_add_headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Trip Info"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/primaryDarkColor"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trip_add_name">
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-        <RadioButton
-            android:id="@+id/trip_radio_location"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:checked="true"
-            android:text="@string/trip_use_location" />
-
-        <RadioButton
-            android:id="@+id/trip_radio_city"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/trip_search_city" />
-
-        <EditText
-            android:id="@+id/trip_add_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:enabled="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/trip_city_edittext"
-            android:autofillHints="@string/trip_city_edittext"
-            android:inputType="text" />
-
-
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/trip_add_label_date"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/trip_add_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/trip_label_date"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints="@string/trip_name_hint"
+        android:ems="10"
+        android:hint="@string/trip_name_hint"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trip_add_radiogroup_location" />
+        app:layout_constraintTop_toBottomOf="@id/trip_add_headline" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/trip_add_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints="@string/trip_city_edittext"
+        android:ems="10"
+        android:hint="@string/trip_city_edittext"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trip_add_name" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/trip_add_use_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="5dp"
+        android:text="or use location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trip_add_city" />
+
+
+    <TextView
+        android:id="@+id/trip_add_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:text="@string/trip_label_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trip_add_use_location" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/trip_add_datepicker"
@@ -85,25 +83,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="8dp"
-        app:icon="@drawable/ic_datepicker"
+        android:layout_marginTop="32dp"
         android:text="@string/trip_date_button_label"
+        app:icon="@drawable/ic_datepicker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trip_add_label_date" />
+        app:layout_constraintTop_toBottomOf="@+id/trip_add_current_location" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/trip_add_button"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        app:icon="@drawable/ic_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/trip_add_the_trip"
+        app:icon="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trip_add_datepicker" />
-
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,12 +9,15 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.button.MaterialButton
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
 import com.speciial.travelchest.model.File
+import com.speciial.travelchest.model.Trip
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.time.LocalDateTime
 
 
 class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
@@ -44,6 +47,9 @@ class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
                 root.findViewById<TextView>(R.id.trip_info_subtitle).text = trip.tripCiy
                 root.findViewById<TextView>(R.id.trip_info_date).text =
                     getString(R.string.date_template, trip.startDate, trip.endDate)
+                root.findViewById<MaterialButton>(R.id.trip_info_end_trip).setOnClickListener {
+                    endTrip(trip)
+                }
 
                 listPager = root.findViewById(R.id.trip_info_pager)
                 listPager.adapter = ListPagerAdapter(it.childFragmentManager, tripID)
@@ -58,6 +64,15 @@ class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
                 highlightButton(0)
             }
 
+        }
+    }
+
+    private fun endTrip(trip: Trip) {
+        doAsync {
+            val db = TravelChestDatabase.get(activity as MainActivity)
+            val now = LocalDateTime.now()
+            trip.endDate = "${now.year}-${now.monthValue}-${now.dayOfMonth}"
+            db.tripDao().update(trip)
         }
     }
 

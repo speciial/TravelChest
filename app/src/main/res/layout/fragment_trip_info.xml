@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.tripinfo.TripInfoFragment">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/trip_info_end_trip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/trip_info_end_trip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/trip_info_title"
         android:layout_width="wrap_content"
@@ -90,7 +100,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/trip_info_pager"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="450dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

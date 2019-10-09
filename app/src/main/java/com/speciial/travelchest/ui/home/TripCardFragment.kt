@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
@@ -15,6 +17,7 @@ import com.speciial.travelchest.FileHelper
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
 import com.speciial.travelchest.database.TravelChestDatabase
+import com.speciial.travelchest.ui.tripinfo.TripAddFragment.Companion.ON_TRIP
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -53,9 +56,18 @@ class TripCardFragment : Fragment() {
                 root.findViewById<TextView>(R.id.home_card_title).text = trip.name
                 root.findViewById<TextView>(R.id.home_card_subtitle).text = trip.tripCiy
 
-                // TODO: replace this with a string template. this is just a fix for now
-                //       because sometimes the fragment context is not initialized
-                root.findViewById<TextView>(R.id.home_card_date).text = "${trip.startDate}, ${trip.endDate}"
+                root.findViewById<TextView>(R.id.home_card_date).text =
+                    (activity as MainActivity).getString(
+                        R.string.date_template,
+                        trip.startDate,
+                        trip.endDate
+                    )
+
+                if (trip.endDate == ON_TRIP) {
+                    root.findViewById<FrameLayout>(R.id.home_card_border).setBackgroundColor(
+                        ContextCompat.getColor(activity as MainActivity, R.color.primaryColor)
+                    )
+                }
 
                 root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
                     tripCardListener?.onTripCardClick(trip.uid)

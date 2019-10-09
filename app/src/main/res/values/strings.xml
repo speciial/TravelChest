@@ -55,4 +55,6 @@
     <string name="home_ar_content_desc">Button to open ar view</string>
     <string name="home_file_content_desc">Button to import file from the phone</string>
 
+    <string name="trip_info_end_trip">End Trip</string>
+
 </resources>
