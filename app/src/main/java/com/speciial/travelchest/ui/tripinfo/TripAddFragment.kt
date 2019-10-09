@@ -93,7 +93,7 @@ class TripAddFragment : Fragment() {
 
             } else {
                 tripCity = root.findViewById<EditText>(R.id.trip_add_city).text.toString()
-                var loca:Location
+                val loca:Location
                 try {
                     loca = getLocationFromCity(tripCity)!!
                     location = loca
@@ -110,10 +110,12 @@ class TripAddFragment : Fragment() {
             if(okay) {
                 var idTrip: Long
                 doAsync {
-                    val lastTrip = db.tripDao().get(prefs.tripId)
-                    if(lastTrip.endDate != ON_TRIP)
-                        lastTrip.endDate = "${now.year}-${now.month}-${now.dayOfMonth}"
-                    db.tripDao().update(lastTrip)
+                    try{
+                        val lastTrip = db.tripDao().get(prefs.tripId)
+                        if(lastTrip.endDate != ON_TRIP)
+                            lastTrip.endDate = "${now.year}-${now.month}-${now.dayOfMonth}"
+                        db.tripDao().update(lastTrip)
+                    }catch (e:java.lang.Exception){}
                     idTrip = db.tripDao()
                         .insert(Trip(0, tripName, tripCity, location!!, "", date, ON_TRIP))
                     prefs.tripId = idTrip
