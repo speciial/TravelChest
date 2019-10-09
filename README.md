@@ -4,6 +4,10 @@ Travel Chest is an AR application for android phones that allows you to save you
 favorite moments and travel experiences and tie them to the locations you've been
 to. 
 
+# UI Testing
+
+Here are some results of your accessibility testing: [Document](https://docs.google.com/document/d/1pu9inYxYFm0sXsWOSOMoreVID97PmCe5oqQ8OSW4948/edit?usp=sharing)
+
 # Building the app
 
 After cloning the project, you need to create a Firebase Project to connect the app with.
