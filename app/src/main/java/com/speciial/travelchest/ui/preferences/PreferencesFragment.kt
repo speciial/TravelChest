@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.fragment.app.Fragment
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.MainActivity.Companion.PREF_NAME
 import com.speciial.travelchest.PreferenceHelper.customPreference
@@ -23,12 +23,12 @@ class PreferencesFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_preferences, container, false)
         val prefs = customPreference(activity as MainActivity, PREF_NAME)
-        root.findViewById<Switch>(R.id.switch_save_online).isChecked = prefs.save_online
-        root.findViewById<Switch>(R.id.switch_save_online).setOnCheckedChangeListener { _, isChecked ->
+        root.findViewById<SwitchMaterial>(R.id.switch_save_online).isChecked = prefs.save_online
+        root.findViewById<SwitchMaterial>(R.id.switch_save_online).setOnCheckedChangeListener { _, isChecked ->
             prefs.save_online = isChecked
         }
-        root.findViewById<Switch>(R.id.switch_darktheme).isChecked = prefs.dark_theme
-        root.findViewById<Switch>(R.id.switch_darktheme).setOnCheckedChangeListener { _, isChecked ->
+        root.findViewById<SwitchMaterial>(R.id.switch_darktheme).isChecked = prefs.dark_theme
+        root.findViewById<SwitchMaterial>(R.id.switch_darktheme).setOnCheckedChangeListener { _, isChecked ->
             prefs.dark_theme = isChecked
             when(isChecked){
                 true -> (activity as MainActivity).setTheme(R.style.DarkTheme_NoActionBar)

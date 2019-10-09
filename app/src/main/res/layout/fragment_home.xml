@@ -14,81 +14,128 @@
         app:layout_constraintBottom_toTopOf="@+id/home_card_pager_tabs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/home_card_pager_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/home_menu_bottom"
+        app:layout_constraintBottom_toTopOf="@+id/home_menu_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_card_pager"
         app:tabBackground="@drawable/card_indicator"
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp"
         app:tabPaddingEnd="6dp" />
 
-    <LinearLayout
+    <View
+        android:id="@+id/home_menu_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/secondaryLightColor"
+        app:layout_constraintBottom_toTopOf="@id/home_menu_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_card_pager_tabs" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/home_menu_bottom"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:background="@color/primaryLightColor"
         android:gravity="center"
         android:orientation="horizontal"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_menu_divider">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/home_picture"
-            android:backgroundTint="@color/trans"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/trans"
             android:contentDescription="@string/home_picture_content_desc"
-            android:padding="10dp"
-            android:src="@drawable/ic_home_camera" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:icon="@drawable/ic_home_camera"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/home_btn_icon_size"
+            app:iconTint="@color/primaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/home_video"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/home_video"
-            android:backgroundTint="@color/trans"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:backgroundTint="@color/trans"
             android:contentDescription="@string/home_movie_content_desc"
-            android:padding="10dp"
-            android:src="@drawable/ic_home_movie" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:icon="@drawable/ic_home_movie"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/home_btn_icon_size"
+            app:iconTint="@color/primaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/home_ar"
+            app:layout_constraintStart_toEndOf="@+id/home_picture" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/home_ar"
-            android:backgroundTint="@color/trans"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:backgroundTint="@color/trans"
             android:contentDescription="@string/home_ar_content_desc"
-            android:padding="20dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_home_ar" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:icon="@drawable/ic_home_ar"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/home_btn_icon_size"
+            app:iconTint="@color/primaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/home_audio"
+            app:layout_constraintStart_toEndOf="@id/home_video" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/home_audio"
-            android:backgroundTint="@color/trans"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:backgroundTint="@color/trans"
             android:contentDescription="@string/home_audio_content_desc"
-            android:padding="10dp"
-            android:src="@drawable/ic_home_audio" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:icon="@drawable/ic_home_audio"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/home_btn_icon_size"
+            app:iconTint="@color/primaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/home_file"
+            app:layout_constraintStart_toEndOf="@id/home_ar" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/home_file"
-            android:backgroundTint="@color/trans"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginStart="32dp"
+            android:backgroundTint="@color/trans"
             android:contentDescription="@string/home_file_content_desc"
-            app:srcCompat="@drawable/ic_home_file" />
-    </LinearLayout>
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:icon="@drawable/ic_home_file"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/home_btn_icon_size"
+            app:iconTint="@color/primaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/home_audio" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

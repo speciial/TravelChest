@@ -29,17 +29,17 @@ class ARBillboard(
 
     var placementNode: TransformableNode = TransformableNode(transformationSystem)
 
-    private var isVisible: Boolean = false
-
     private lateinit var renderable: ViewRenderable
+
+    private var isVisible: Boolean = true
 
     init {
         val temp = LayoutInflater.from(context)
         val view = temp.inflate(R.layout.default_billboard_view, null)
         fillView(view)
 
-        val cardWidthInMeterScaled = (250.0f / 250.0f) * 0.2f
-        val cardHeightInMeterScaled = (190.0f / 250.0f) * 0.2f
+        val cardWidthInMeterScaled = (250.0f / 250.0f) * 0.3f
+        val cardHeightInMeterScaled = (190.0f / 250.0f) * 0.3f
 
         ViewRenderable.builder()
             .setView(context, view)
@@ -51,8 +51,10 @@ class ARBillboard(
                 }
                 renderable.horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
                 renderable.verticalAlignment = ViewRenderable.VerticalAlignment.BOTTOM
+
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
+                toggleVisibility()
 
                 placementNode.worldRotation = Quaternion.eulerAngles(Vector3(0.0f, 0.0f, 0.0f))
                 placementNode.localPosition = Vector3(0.0f, 0.15f, 0.0f)
@@ -73,7 +75,8 @@ class ARBillboard(
 
         view.findViewById<TextView>(R.id.ar_card_title).text = trip.name
         view.findViewById<TextView>(R.id.ar_card_subtitle).text = trip.tripCiy
-        view.findViewById<TextView>(R.id.ar_card_date).text = "${trip.startDate} - ${trip.endDate}"
+        view.findViewById<TextView>(R.id.ar_card_date).text =
+            context.getString(R.string.date_template, trip.startDate, trip.endDate)
 
         view.findViewById<ImageButton>(R.id.ar_card_show_trip).setOnClickListener {
             billboardEventListener.onTripInfoButtonClick(trip.uid)
@@ -81,7 +84,12 @@ class ARBillboard(
     }
 
     fun adjustOrientation(camPos: Vector3) {
-        // TODO: improve the rotation
+        // TODO: implement the billboard rotation correctly
+        //
+        //      Note: We've been trying to make this work
+        //      but for some reason the initially calculated
+        //      rotation sometimes creates weird angles, so
+        //      we decided to not implement it.
         val bb = placementNode.worldPosition
 
         val lookDir = Vector3.subtract(bb, camPos)

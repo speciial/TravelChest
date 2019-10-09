@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -23,6 +22,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -56,14 +56,16 @@ class HomeFragment : Fragment() {
         private const val REQUEST_IMAGE_CAPTURE = 1
         private const val REQUEST_VIDEO_CAPTURE = 2
         private const val READ_REQUEST_CODE = 42
+
+        private const val AUTHORITY_STRING = "com.speciial.travelchest.ui.home"
     }
 
     private lateinit var cardViewPager: ViewPager
     private lateinit var cardViewTabs: TabLayout
 
-    private var mCurrentPhotoPath: Uri ?= null
-    private var mCurrentVideoPath: Uri ?= null
-    private var mCurrentSoundPath: Uri ?= null
+    private var mCurrentPhotoPath: Uri? = null
+    private var mCurrentVideoPath: Uri? = null
+    private var mCurrentSoundPath: Uri? = null
 
     private lateinit var imageFile: File
     private lateinit var movieFile: File
@@ -78,7 +80,7 @@ class HomeFragment : Fragment() {
 
     private var currentUser: FirebaseUser? = null
     private lateinit var auth: FirebaseAuth
-    lateinit var storage: FirebaseStorage
+    private lateinit var storage: FirebaseStorage
 
     private lateinit var db: TravelChestDatabase
     private lateinit var prefs: SharedPreferences
@@ -100,6 +102,7 @@ class HomeFragment : Fragment() {
 
         db = TravelChestDatabase.get(activity as MainActivity)
 
+        // TODO: remove
         doAsync {
             val tripListLiveData = db.tripDao().getAll()
             val fileListLiveData = db.fileDao().getAll()
@@ -118,19 +121,20 @@ class HomeFragment : Fragment() {
                 })
             }
         }
-        root.findViewById<ImageButton>(R.id.home_picture).setOnClickListener {
+
+        root.findViewById<MaterialButton>(R.id.home_picture).setOnClickListener {
             buttonPictureListener()
         }
-        root.findViewById<ImageButton>(R.id.home_video).setOnClickListener {
+        root.findViewById<MaterialButton>(R.id.home_video).setOnClickListener {
             buttonVideoListener()
         }
-        root.findViewById<ImageButton>(R.id.home_audio).setOnClickListener {
+        root.findViewById<MaterialButton>(R.id.home_audio).setOnClickListener {
             buttonAudioListener()
         }
-        root.findViewById<ImageButton>(R.id.home_ar).setOnClickListener {
+        root.findViewById<MaterialButton>(R.id.home_ar).setOnClickListener {
             findNavController().navigate(R.id.nav_ar)
         }
-        root.findViewById<ImageButton>(R.id.home_file).setOnClickListener {
+        root.findViewById<MaterialButton>(R.id.home_file).setOnClickListener {
             buttonFileListener()
         }
 
@@ -138,6 +142,14 @@ class HomeFragment : Fragment() {
 
 
         return root
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(
+            activity as MainActivity,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun setupTripCards(root: View) {
@@ -163,13 +175,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun buttonPictureListener() {
-
         getLastLocation()
         imageFile = createFile(Type.IMAGE)
 
         val photoURI: Uri = FileProvider.getUriForFile(
             activity as MainActivity,
-            "com.speciial.travelchest.ui.home",
+            AUTHORITY_STRING,
             imageFile
         )
         mCurrentPhotoPath = photoURI
@@ -186,7 +197,7 @@ class HomeFragment : Fragment() {
 
         val videoURI: Uri = FileProvider.getUriForFile(
             activity as MainActivity,
-            "com.speciial.travelchest.ui.home",
+            AUTHORITY_STRING,
             movieFile
         )
         mCurrentVideoPath = videoURI
@@ -198,14 +209,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun buttonAudioListener() {
+        // TODO: clean up
         val dialog = AudioDialog(
             activity as MainActivity,
             "Record an audio",
             "Press the start button to record, Press stop when you have finished"
         )
-        var recFile:File ?= null
-        val recFileName= "temprecord.raw"
-        val storageDir= activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+        var recFile: File?
+        val recFileName = "temprecord.raw"
+        val storageDir = activity?.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
 
         dialog.startButton!!.setOnClickListener {
             record = Record(activity as MainActivity)
@@ -221,16 +233,12 @@ class HomeFragment : Fragment() {
         dialog.playButton!!.setOnClickListener {
             try {
                 recFile = File(storageDir.toString() + "/" + recFileName)
-                val inputStream = FileInputStream(recFile)
+                val inputStream = FileInputStream(recFile!!)
                 val myRunnable = PlayAudio(inputStream)
                 mThreadPlay = Thread(myRunnable)
                 mThreadPlay!!.start()
             } catch (ex: IOException) {
-                Toast.makeText(
-                    activity as MainActivity,
-                    "You should first record an audio",
-                    Toast.LENGTH_LONG
-                ).show()
+                showToast("You should first record an audio")
             }
         }
         dialog.saveButton!!.setOnClickListener {
@@ -238,16 +246,12 @@ class HomeFragment : Fragment() {
             try {
                 recFile = File(storageDir.toString() + "/" + recFileName)
                 if (recFile == null)
-                    Toast.makeText(
-                        activity as MainActivity,
-                        "No audio saved",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showToast("No audio saved")
                 else {
                     soundFile = createFile(Type.AUDIO)
                     val audioURI: Uri = FileProvider.getUriForFile(
                         activity as MainActivity,
-                        "com.speciial.travelchest.ui.home",
+                        AUTHORITY_STRING,
                         soundFile
                     )
                     mCurrentSoundPath = audioURI
@@ -257,11 +261,7 @@ class HomeFragment : Fragment() {
                     save(Type.AUDIO, soundFile, mCurrentSoundPath!!)
                 }
             } catch (e: IOException) {
-                Toast.makeText(
-                    activity as MainActivity,
-                    "You should first record an audio",
-                    Toast.LENGTH_LONG
-                ).show()
+                showToast("You should first record an audio")
             }
 
         }
@@ -362,22 +362,25 @@ class HomeFragment : Fragment() {
     private fun saveFile(type: Int, path: Uri) {
         doAsync {
             val trip = db.tripDao().get(prefs.tripId)
-            if(trip.getFilesByType(Type.IMAGE).isEmpty() && type == Type.IMAGE)
+            if (trip.getFilesByType(Type.IMAGE).isEmpty() && type == Type.IMAGE)
                 trip.pathThumbnail = path.toString()
-            trip.fileList.add(com.speciial.travelchest.model.File(
-                0,
-                type,
-                path.toString(),
-                Location(lastLocation!!.latitude, lastLocation!!.longitude)
-            ))
+            trip.fileList.add(
+                com.speciial.travelchest.model.File(
+                    0,
+                    type,
+                    path.toString(),
+                    Location(lastLocation!!.latitude, lastLocation!!.longitude)
+                )
+            )
             db.tripDao().update(trip)
         }
     }
 
 
     private fun upload(type: Int, fileToDelete: File) {
+        // TODO: clean up
         var typeString = "null"
-        var path:Uri ?= null
+        var path: Uri? = null
 
         when (type) {
             Type.IMAGE -> {

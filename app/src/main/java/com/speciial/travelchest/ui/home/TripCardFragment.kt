@@ -22,6 +22,7 @@ class TripCardFragment : Fragment() {
 
     private var tripCardListener: TripCardAdapter.TripCardListener? = null
     private var tripID: Long? = null
+    private var _context: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,20 +41,22 @@ class TripCardFragment : Fragment() {
             val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
 
             uiThread {
-                var bitmap: Bitmap?= null
-                try{
-                    bitmap =  FileHelper.getBitmapFromPath(context!!,trip.pathThumbnail)
-                } catch (e:Exception){}
+                var bitmap: Bitmap? = null
+                try {
+                    bitmap = FileHelper.getBitmapFromPath(context!!, trip.pathThumbnail)
+                } catch (e: Exception) {
+                }
 
                 if (bitmap != null) {
-                    val bitmapScaled = bitmap.scale(bitmap.width / 4, bitmap.height / 4, false)
-                    root.findViewById<ImageView>(R.id.home_card_thumbnail).setImageBitmap(bitmapScaled)
+                    val bitmapScaled = bitmap.scale(bitmap.width / 2, bitmap.height / 2, false)
+                    root.findViewById<ImageView>(R.id.home_card_thumbnail)
+                        .setImageBitmap(bitmapScaled)
                 }
 
                 root.findViewById<TextView>(R.id.home_card_title).text = trip.name
                 root.findViewById<TextView>(R.id.home_card_subtitle).text = trip.tripCiy
                 root.findViewById<TextView>(R.id.home_card_date).text =
-                    "${trip.startDate} - ${trip.endDate}"
+                    _context!!.getString(R.string.date_template, trip.startDate, trip.endDate)
 
                 root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
                     tripCardListener?.onTripCardClick(trip.uid)
@@ -66,6 +69,7 @@ class TripCardFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        _context = context
         if (context is TripCardAdapter.TripCardListener) {
             tripCardListener = context
         } else {
@@ -76,6 +80,7 @@ class TripCardFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         tripCardListener = null
+        _context = null
     }
 
     companion object {

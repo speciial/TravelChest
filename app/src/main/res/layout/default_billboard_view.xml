@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="250dp"
@@ -13,6 +13,7 @@
             android:id="@+id/ar_card_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:contentDescription="@string/billboard_thumbnail_desc"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -56,14 +57,16 @@
             app:layout_constraintStart_toEndOf="@+id/ar_card_subtitle"
             app:layout_constraintTop_toBottomOf="@+id/ar_card_title" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/ar_card_show_trip"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@string/billboard_image_btn_desc"
+            app:icon="@drawable/ic_chevron_right"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

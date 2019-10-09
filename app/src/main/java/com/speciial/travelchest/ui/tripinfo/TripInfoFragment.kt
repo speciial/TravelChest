@@ -43,7 +43,7 @@ class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
                 root.findViewById<TextView>(R.id.trip_info_title).text = trip.name
                 root.findViewById<TextView>(R.id.trip_info_subtitle).text = trip.tripCiy
                 root.findViewById<TextView>(R.id.trip_info_date).text =
-                    "${trip.startDate} - ${trip.endDate}"
+                    getString(R.string.date_template, trip.startDate, trip.endDate)
 
                 listPager = root.findViewById(R.id.trip_info_pager)
                 listPager.adapter = ListPagerAdapter(it.childFragmentManager, tripID)
