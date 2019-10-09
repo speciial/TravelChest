@@ -78,26 +78,26 @@ class TripInfoFragment : Fragment(), ViewPager.OnPageChangeListener {
 
     private fun highlightButton(index: Int) {
         root.findViewById<Button>(R.id.btn_image_list)
-            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+            .setBackgroundColor(context!!.getColor(R.color.primaryLightColor))
         root.findViewById<Button>(R.id.btn_video_list)
-            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+            .setBackgroundColor(context!!.getColor(R.color.primaryLightColor))
         root.findViewById<Button>(R.id.btn_audio_list)
-            .setBackgroundColor(context!!.getColor(R.color.secondaryColor))
+            .setBackgroundColor(context!!.getColor(R.color.primaryLightColor))
 
         when (index) {
             0 -> root.findViewById<Button>(R.id.btn_image_list).setBackgroundColor(
                 context!!.getColor(
-                    R.color.secondaryDarkColor
+                    R.color.primaryColor
                 )
             )
             1 -> root.findViewById<Button>(R.id.btn_video_list).setBackgroundColor(
                 context!!.getColor(
-                    R.color.secondaryDarkColor
+                    R.color.primaryColor
                 )
             )
             2 -> root.findViewById<Button>(R.id.btn_audio_list).setBackgroundColor(
                 context!!.getColor(
-                    R.color.secondaryDarkColor
+                    R.color.primaryColor
                 )
             )
         }
