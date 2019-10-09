@@ -22,7 +22,6 @@ class TripCardFragment : Fragment() {
 
     private var tripCardListener: TripCardAdapter.TripCardListener? = null
     private var tripID: Long? = null
-    private var _context: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +54,10 @@ class TripCardFragment : Fragment() {
 
                 root.findViewById<TextView>(R.id.home_card_title).text = trip.name
                 root.findViewById<TextView>(R.id.home_card_subtitle).text = trip.tripCiy
-                root.findViewById<TextView>(R.id.home_card_date).text =
-                    _context!!.getString(R.string.date_template, trip.startDate, trip.endDate)
+
+                // TODO: replace this with a string template. this is just a fix for now
+                //       because sometimes the fragment context is not initialized
+                root.findViewById<TextView>(R.id.home_card_date).text = "${trip.startDate}, ${trip.endDate}"
 
                 root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
                     tripCardListener?.onTripCardClick(trip.uid)
@@ -69,7 +70,6 @@ class TripCardFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        _context = context
         if (context is TripCardAdapter.TripCardListener) {
             tripCardListener = context
         } else {
@@ -80,7 +80,6 @@ class TripCardFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         tripCardListener = null
-        _context = null
     }
 
     companion object {

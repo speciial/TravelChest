@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import com.speciial.travelchest.FileHelper
 import com.speciial.travelchest.MainActivity
 import com.speciial.travelchest.R
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 class ImageViewerFragment : Fragment() {
@@ -19,8 +21,15 @@ class ImageViewerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.viewer_image, container, false)
-        val bitmap = FileHelper.getBitmapFromPath(activity as MainActivity,arguments?.getString("path")!!)
-        root.findViewById<ImageView>(R.id.image_viewer).setImageBitmap(bitmap)
+        doAsync {
+            val bitmap = FileHelper.getBitmapFromPath(
+                activity as MainActivity,
+                arguments?.getString("path")!!
+            )
+            uiThread {
+                root.findViewById<ImageView>(R.id.image_viewer).setImageBitmap(bitmap)
+            }
+        }
         return root
     }
 

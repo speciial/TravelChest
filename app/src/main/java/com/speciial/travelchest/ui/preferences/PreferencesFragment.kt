@@ -22,11 +22,17 @@ class PreferencesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_preferences, container, false)
+
         val prefs = customPreference(activity as MainActivity, PREF_NAME)
         root.findViewById<SwitchMaterial>(R.id.switch_save_online).isChecked = prefs.save_online
         root.findViewById<SwitchMaterial>(R.id.switch_save_online).setOnCheckedChangeListener { _, isChecked ->
             prefs.save_online = isChecked
         }
+
+        // TODO: implement switching the theme
+        //       due to time constraints we couldn't implement this in the final
+        //       version of the project
+        root.findViewById<SwitchMaterial>(R.id.switch_darktheme).isEnabled = false
         root.findViewById<SwitchMaterial>(R.id.switch_darktheme).isChecked = prefs.dark_theme
         root.findViewById<SwitchMaterial>(R.id.switch_darktheme).setOnCheckedChangeListener { _, isChecked ->
             prefs.dark_theme = isChecked
