@@ -47,16 +47,15 @@ class TripCardFragment : Fragment() {
                 root.findViewById<TextView>(R.id.home_card_subtitle).text = trip.tripCiy
 
                 root.findViewById<TextView>(R.id.home_card_date).text =
-                    (activity as MainActivity).getString(
-                        R.string.date_template,
-                        trip.startDate,
-                        trip.endDate
-                    )
+                    "${trip.startDate} - ${trip.endDate}"
 
-                if (trip.endDate == ON_TRIP) {
-                    root.findViewById<FrameLayout>(R.id.home_card_border).setBackgroundColor(
-                        ContextCompat.getColor(activity as MainActivity, R.color.primaryColor)
-                    )
+                try {
+                    if (trip.endDate == ON_TRIP) {
+                        root.findViewById<FrameLayout>(R.id.home_card_border).setBackgroundColor(
+                            ContextCompat.getColor(activity as MainActivity, R.color.primaryColor)
+                        )
+                    }
+                } catch (e: Exception) {
                 }
 
                 root.findViewById<MaterialCardView>(R.id.home_card_view).setOnClickListener {
