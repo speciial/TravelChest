@@ -110,8 +110,12 @@ class TripAddFragment : Fragment() {
             if(okay) {
                 var idTrip: Long
                 doAsync {
+                    val lastTrip = db.tripDao().get(prefs.tripId)
+                    if(lastTrip.endDate != ON_TRIP)
+                        lastTrip.endDate = "${now.year}-${now.month}-${now.dayOfMonth}"
+                    db.tripDao().update(lastTrip)
                     idTrip = db.tripDao()
-                        .insert(Trip(0, tripName, tripCity, location!!, "", date, "On trip"))
+                        .insert(Trip(0, tripName, tripCity, location!!, "", date, ON_TRIP))
                     prefs.tripId = idTrip
                 }
                 findNavController().navigate(R.id.nav_home)
@@ -162,6 +166,9 @@ class TripAddFragment : Fragment() {
                 lastLocation = Location(task.result!!.latitude, task.result!!.longitude)
             }
         }
+    }
+    companion object{
+        const val ON_TRIP = "On trip"
     }
 
 }

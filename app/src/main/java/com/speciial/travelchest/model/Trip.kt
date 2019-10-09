@@ -15,7 +15,7 @@ data class Trip(
     val location:Location,
     var pathThumbnail:String,
     val startDate:String,
-    val endDate:String,
+    var endDate:String,
     val fileList:ArrayList<File> = ArrayList()
 ) {
     fun getFilesByType(type:Int):List<File>{

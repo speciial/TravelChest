@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), TripCardAdapter.TripCardListener, Trip
          prefs = customPreference(this, PREF_NAME)
 
         when(prefs.dark_theme){
-            true -> setTheme(R.style.DarkTheme_NoActionBar)
+            true -> {}
             false -> setTheme(R.style.AppTheme_NoActionBar)
         }
 

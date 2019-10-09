@@ -364,12 +364,17 @@ class HomeFragment : Fragment() {
             val trip = db.tripDao().get(prefs.tripId)
             if (trip.getFilesByType(Type.IMAGE).isEmpty() && type == Type.IMAGE)
                 trip.pathThumbnail = path.toString()
+            var location:Location
+            if(lastLocation == null)
+                location = Location(0.0,0.0)
+            else
+                location = Location(lastLocation!!.latitude, lastLocation!!.longitude)
             trip.fileList.add(
                 com.speciial.travelchest.model.File(
                     0,
                     type,
                     path.toString(),
-                    Location(lastLocation!!.latitude, lastLocation!!.longitude)
+                    location
                 )
             )
             db.tripDao().update(trip)

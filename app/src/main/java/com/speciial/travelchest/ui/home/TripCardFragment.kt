@@ -38,14 +38,12 @@ class TripCardFragment : Fragment() {
 
         doAsync {
             val trip = TravelChestDatabase.get(activity as MainActivity).tripDao().get(tripID!!)
-
+            var bitmap: Bitmap? = null
+            try {
+                bitmap = FileHelper.getBitmapFromPath(context!!, trip.pathThumbnail)
+            } catch (e: Exception) {
+            }
             uiThread {
-                var bitmap: Bitmap? = null
-                try {
-                    bitmap = FileHelper.getBitmapFromPath(context!!, trip.pathThumbnail)
-                } catch (e: Exception) {
-                }
-
                 if (bitmap != null) {
                     val bitmapScaled = bitmap.scale(bitmap.width / 2, bitmap.height / 2, false)
                     root.findViewById<ImageView>(R.id.home_card_thumbnail)

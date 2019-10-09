@@ -37,7 +37,7 @@ class PreferencesFragment : Fragment() {
         root.findViewById<SwitchMaterial>(R.id.switch_darktheme).setOnCheckedChangeListener { _, isChecked ->
             prefs.dark_theme = isChecked
             when(isChecked){
-                true -> (activity as MainActivity).setTheme(R.style.DarkTheme_NoActionBar)
+                true -> {}
                 false -> (activity as MainActivity).setTheme(R.style.AppTheme_NoActionBar)
             }
         }
