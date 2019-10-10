@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.scale
+import com.google.android.material.button.MaterialButton
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -78,7 +78,7 @@ class ARBillboard(
         view.findViewById<TextView>(R.id.ar_card_date).text =
             context.getString(R.string.date_template, trip.startDate, trip.endDate)
 
-        view.findViewById<ImageButton>(R.id.ar_card_show_trip).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.ar_card_show_trip).setOnClickListener {
             billboardEventListener.onTripInfoButtonClick(trip.uid)
         }
     }

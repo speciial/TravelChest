@@ -22,7 +22,8 @@ class ARMarker(
     private val placementNode: TransformableNode = TransformableNode(transformationSystem)
 
     private lateinit var renderable: ModelRenderable
-    private lateinit var billboard: ARBillboard
+
+    private var billboard: ARBillboard? = null
 
     private var eventListener: MarkerEventListener? = null
 
@@ -36,26 +37,28 @@ class ARMarker(
                 placementNode.setParent(anchorNode)
                 placementNode.renderable = renderable
                 placementNode.scaleController.isEnabled = false
+
                 placementNode.setOnTapListener { _, _ ->
                     if (eventListener != null) {
+                        billboard = ARBillboard(
+                            context,
+                            transformationSystem,
+                            placementNode,
+                            trip,
+                            context as ARBillboard.BillboardEventListener
+                        )
+
                         Log.d(TAG, "Marker Clicked")
                         eventListener!!.onMarkerClick(this)
                     }
-                    toggleBillboard()
+                    //toggleBillboard()
                 }
 
-                billboard = ARBillboard(
-                    context,
-                    transformationSystem,
-                    placementNode,
-                    trip,
-                    context as ARBillboard.BillboardEventListener
-                )
             }
     }
 
     fun toggleBillboard() {
-        billboard.toggleVisibility()
+        billboard!!.toggleVisibility()
     }
 
     fun setEventListener(el: MarkerEventListener) {
